@@ -86,7 +86,6 @@ int main(void)
 // add quit to the intial loop inside the main
 
 
-
 int my_strlen(char *str)
 {
     int counter = 0;
