@@ -20,6 +20,8 @@ a first letter that indicates the state of synchronization of the chain:
 n number of nodes in the chain.
 the "]> " string (with a space) */
 
+//Just adding a comment to see if changes chanfgeeaslchlashlkhjhiklweafghuiol
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -48,6 +50,7 @@ int main(void)
 
         printf("buff: %s\n", buff);
     }
+    printf("Hey how you doing?\n");
 
     return 0;
 }
