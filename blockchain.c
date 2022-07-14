@@ -91,23 +91,24 @@ void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based
     }
 }
 
-void remove_blocks(block_t *block_head, node_t *node_head, char* b_id, int n_id)
+void remove_blocks(node_t *node_head, char* b_id, int n_id) // function to remove blocks, will require some testing
 {
     block_t *temp, *current, *prev;
-    while (node_head != NULL)
+    while (node_head != NULL) // loop through all nodes
     {
-        while(block_head != NULL)
+        while(node_head->block_head != NULL) // while the blockhead exists and isnt null
         {
-            if(strcmp(block_head->next->bId, b_id))
+            if(strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
             {
-                prev = block_head;
-                temp = block_head->next;
-                current = block_head->next->next;
+                prev = node_head->block_head;
+                temp = node_head->block_head->next;
+                current = node_head->block_head->next->next;
                 prev->next = current;
                 temp->next = NULL;
                 free(temp);
             }
         }
+        node_head = node_head->next;
     }
 }
 

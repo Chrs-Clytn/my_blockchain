@@ -58,7 +58,7 @@ int main(void)
     // print out either "s" or "-" whether synchronised or not. and the number of nodes surrounded by brackets with > e.g. [s1]>
 
 // create function to append to the node struct 
-    // take node id from prompt and create a node with that id
+    // take node id from prompt and create a node with that id   
 
 // create function to append to the block struct and to a specific node
         // take node id add block struct to that node id
