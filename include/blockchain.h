@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifndef BLOCKCHAIN.H
-#define BLOCKCHAIN.H
+#ifndef BLOCKCHAIN_H
+#define BLOCKCHAIN_H
 
 typedef struct block_s {
     char *bId;
@@ -15,9 +15,6 @@ typedef struct node_s {
     int nId;
     struct node_s *next;
 } node_t;
-
-#define ERR_1 "no more resources available on the computer"
-#define ERR_2 "this node already exists"
 
 node_t *append_node(node_t *head, int n_id);
 block_t *append_block(block_t *block_head, char *b_id);
