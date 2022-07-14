@@ -20,6 +20,7 @@ a first letter that indicates the state of synchronization of the chain:
 n number of nodes in the chain.
 the "]> " string (with a space) */
 
+// add comment line 23
 
 #include "blockchain.h"
 
