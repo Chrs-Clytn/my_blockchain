@@ -1,4 +1,7 @@
-#ifndef
+#include <unistd.h>
+
+#ifndef BLOCKCHAIN.H
+#define BLOCKCHAIN.H
 
 typedef struct block_s {
     char *bId;
@@ -15,3 +18,4 @@ typedef struct node_s {
 #define ERR_2 "this node already exists"
 
 
+#endif

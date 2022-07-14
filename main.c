@@ -23,7 +23,7 @@ the "]> " string (with a space) */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-// #include "blockchain.h"
+#include "blockchain.h"
 
 #define PROMPT_SIZE 512
 
