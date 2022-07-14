@@ -9,7 +9,7 @@ typedef struct block_s {
 } block_t;
 
 typedef struct node_s {
-    block_t *head;
+    block_t *block_head;
     int nId;
     struct node_s *next;
 } node_t;
