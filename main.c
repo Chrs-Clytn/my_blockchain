@@ -20,15 +20,10 @@ a first letter that indicates the state of synchronization of the chain:
 n number of nodes in the chain.
 the "]> " string (with a space) */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+
 #include "blockchain.h"
 
 #define PROMPT_SIZE 512
-
-int my_strlen(char *str);
-int my_strcmp(char *s1, char *s2);
 
 int main(void)
 {
@@ -81,28 +76,3 @@ int main(void)
     // copy those blocks to each other node
 
 // add quit to the intial loop inside the main
-
-
-int my_strlen(char *str)
-{
-    int counter = 0;
-    while(str[counter] != '\0')
-        counter++;    
-    return counter;
-}
-
-int my_strcmp(char *s1, char *s2) 
-{
-    while (*s1)
-    {
-        // if characters differ, or end of the second string is reached
-        if (*s1 != *s2)
-            break;
-
-        // move to the next pair of characters
-        s1++;
-        s2++;
-        // return the ASCII difference after converting `char*` to `unsigned char*`
-    }
-    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
-}    
