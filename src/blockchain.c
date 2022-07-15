@@ -1,4 +1,7 @@
 #include "blockchain.h"
+#include "string_mgmt.h"
+
+// replace lib functions with self-made functions; these are either in helpers.c (include helpers.h if necessary) or string_mgmt.c
 
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
@@ -91,14 +94,14 @@ void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based
     }
 }
 
-void remove_blocks(node_t *node_head, char* b_id, int n_id) // function to remove blocks, will require some testing
+void remove_blocks(node_t *node_head, char *b_id, int n_id) // function to remove blocks, will require some testing
 {
     block_t *temp, *current, *prev;
     while (node_head != NULL) // loop through all nodes
     {
-        while(node_head->block_head != NULL) // while the blockhead exists and isnt null
+        while (node_head->block_head != NULL) // while the blockhead exists and isnt null
         {
-            if(strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
+            if (strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
             {
                 prev = node_head->block_head;
                 temp = node_head->block_head->next;
@@ -112,19 +115,19 @@ void remove_blocks(node_t *node_head, char* b_id, int n_id) // function to remov
     }
 }
 
-void listPrinter(node_t* node_head, char* argument) //generic list printer
+void listPrinter(node_t *node_head, char *argument) // generic list printer
 {
     while (node_head != NULL) // if no -l argument, print out node id and \n
     {
         printf("%s\n", node_head->nId);
         node_head = node_head->next;
     }
-    if(strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
+    if (strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
     {
         while (node_head != NULL)
         {
             printf("%s : ", node_head->nId);
-            while(node_head->block_head != NULL)
+            while (node_head->block_head != NULL)
             {
                 printf("%d, ", node_head->block_head->bId);
                 node_head->block_head = node_head->block_head->next;

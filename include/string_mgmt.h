@@ -6,7 +6,7 @@
 #include <stdlib.h>
 
 int my_strlen(char *string);
-char* my_strcpy(char *dst, char *src);
+void my_strcpy(char *dst, char *src);
 char* my_strdup(char *str);
 int my_strcmp(char *s1, char *s2);
 int my_putchar(char c);
