@@ -4,6 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+
+#ifndef CHAIN_S
+#define CHAIN_S
+typedef struct chain_s {
+    bool synced;
+    int nodes;
+} chain_t;
+#endif
 
 #ifndef BLOCK_S
 #define BLOCK_S

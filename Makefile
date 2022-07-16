@@ -1,11 +1,13 @@
 OBJ = obj/main.o\
+	obj/parse_save.o\
 	obj/helpers.o\
 	obj/string_mgmt.o\
 	# obj/blockchain.o\
 
-CFLAGS += -Iinclude # -g3 -fsanitize=address # -Wall -Wextra -Werror
+CFLAGS += -Iinclude -Wall -Wextra -Werror -g3 -fsanitize=address
 
 HEADER = include/main.h\
+	include/parse_save.h\
 	include/blockchain.h\
 	include/helpers.h\
 	include/string_mgmt.h\
@@ -21,6 +23,8 @@ my_blockchain: $(OBJ)
 	$(CC) -o $(BIN) $(OBJ) $(CFLAGS)
 
 obj/main.o: src/main.c
+	${CC} ${CFLAGS} -c $< -o $@
+obj/parse_save.o: src/parse_save.c
 	${CC} ${CFLAGS} -c $< -o $@
 # obj/blockchain.o: src/blockchain.c
 #	${CC} ${CFLAGS} -c $< -o $@

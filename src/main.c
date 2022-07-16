@@ -1,33 +1,40 @@
 #include "main.h"
-#include "blockchain.h"
-#include "string_mgmt.h"
-#include "dbg.h"
-
-char *get_input();
-char *change_prompt(char *input);
 
 int main(void)
 {
-    char *prompt_string = "s0";
-    char *input = NULL;
+    // if saved blockchain exists, load it here
+    // open_chain(argv[1]);
 
-    while (1)
+    // else create blockchain struct
+    chain_t chain;
+    chain.synced = true;
+    chain.nodes = 0;
+
+    char *prompt_string = change_prompt(chain); // use change_prompt here already
+    char *input = "";
+
+    while (true)
     {
-        printf("[%s]>\n", prompt_string);
-
-        input = get_input();
+        // print prompt to terminal, then reset input before get_input()
+        printf("[%s]> %s\n", prompt_string, input);
         
-        // do other stuff with input info -> parsing
+        input = NULL;
+        free(input);
+        input = get_input();
 
         // exit condition
         if (my_strcmp(input, "quit") == 0)
+        {
+            save_blockchain();
             break;
+        }
+
+        // input parsing
+        // parse_input(input, chain);
         
         // prepare string for next prompt
-        // prompt_string = change_prompt(input);
-
-        input = NULL;
-        free(input);
+        prompt_string = NULL; // or memset?
+        prompt_string = change_prompt(chain);
     }
 
     // when the user quit, input still has to be freed
@@ -37,30 +44,6 @@ int main(void)
         free(input);
     }
     return 0;
-}
-
-char *get_input()
-{
-    // set up strings
-    char *input = NULL;
-    char buff[MAX_INPUT_SIZE];
-    my_memset(buff, '\0', MAX_INPUT_SIZE - 1);
-
-    // read input and close buffer
-    int readBytes = 0;
-    readBytes = read(0, buff, MAX_INPUT_SIZE);
-    buff[readBytes - 1] = '\0';
-
-    // copy buffer for better handling & return
-    input = my_strdup(buff);
-    return input;
-}
-
-char *change_prompt(char *input)
-{
-    char *prompt = NULL;
-
-    return prompt;
 }
 
 // create main function to read the prompt to buffer
