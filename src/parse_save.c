@@ -37,7 +37,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     string_array *input_arr = my_split(input, " ");
 
     // go through string arr, fill command struct according to input
-    for (int i = 0; i < input_arr->size - 1; i++)
+    for (int i = 0; i < input_arr->size - 1; i++)                       // USE SWITCH CASE?
     {
         if (my_strcmp("add", input_arr->array[i]) == 0)
             command->add = true;
@@ -52,7 +52,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
         if (my_strcmp("block", input_arr->array[i]) == 0)
             command->block = true;
 
-        if (input_arr->size > 3)
+        if (input_arr->size > 3)                            // add another one for block id: string
             command->id = my_atoi(input_arr->array[2]);
 
         if (input_arr->size > 4 && my_strcmp("*", input_arr->array[3]) == 0)
