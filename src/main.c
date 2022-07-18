@@ -36,6 +36,9 @@ int main(void)
         // input parsing
         command_t *command = parse_input(input);
         debug("add now? %d", command->add);
+        debug("node? %d", command->node);
+        debug("id? %d", command->id);
+        debug("all? %d", command->all);
 
         // the action takes places here, depending on command
         // take_action(command);

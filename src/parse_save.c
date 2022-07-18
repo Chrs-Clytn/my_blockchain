@@ -30,10 +30,9 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     command->sync = false;
     command->node = false;
     command->block = false;
-    command->nid = false;
-    command->bid = false;
+    command->id = false;  // id is third arg and depends on "node" or "block" named before – so just one id needed here
+    command->all = false;
 
-    debug("input: %s", input);
     // create string arr for all the input items by using my_split on the input
     string_array *input_arr = my_split(input, " ");
 
@@ -41,13 +40,27 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     for (int i = 0; i < input_arr->size - 1; i++)
     {
         if (my_strcmp("add", input_arr->array[i]) == 0)
-        {
-            debug("ADD");
             command->add = true;
-        }
-        // etc.
+        if (my_strcmp("rm", input_arr->array[i]) == 0)
+            command->rm = true;
+        if (my_strcmp("ls", input_arr->array[i]) == 0)
+            command->ls = true;
+        if (my_strcmp("sync", input_arr->array[i]) == 0)
+            command->sync = true;
+        if (my_strcmp("node", input_arr->array[i]) == 0)
+            command->node = true;
+        if (my_strcmp("block", input_arr->array[i]) == 0)
+            command->block = true;
+
+        if (input_arr->size > 3)
+            command->id = my_atoi(input_arr->array[2]);
+
+        if (input_arr->size > 4 && my_strcmp("*", input_arr->array[3]) == 0)
+            command->all = true;
     }
 
+    input_arr = NULL;
+    free(input_arr);
     return command;
 }
 
