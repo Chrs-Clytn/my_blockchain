@@ -21,7 +21,7 @@ typedef struct command_s {
     bool sync;
     bool node;
     bool block;
-    int id;
+    int id;  // two separate id's?
     bool all;
 } command_t;
 #endif
