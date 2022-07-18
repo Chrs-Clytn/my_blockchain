@@ -2,15 +2,19 @@
 
 int main(void)
 {
+    chain_t *chain = malloc(sizeof(chain_t));
+    if (chain == NULL)
+        printf("%s", ERR_1);
+        
     // if saved blockchain exists, load it here
-    // open_chain(argv[1]);
+    // chain = open_chain(argv[1]);  // chain struct might need more info on actual nodes and blocks
 
-    // else create blockchain struct
-    chain_t chain;
-    chain.synced = true;
-    chain.nodes = 0;
+    // else create empty blockchain
+    chain->synced = true;
+    chain->nodes = 0;
 
-    char *prompt_string = change_prompt(chain); // use change_prompt here already
+    // set strings for first prompt
+    char *prompt_string = change_prompt(chain);
     char *input = "";
 
     while (true)
@@ -30,10 +34,14 @@ int main(void)
         }
 
         // input parsing
-        // parse_input(input, chain);
+        command_t *command = parse_input(input);
+        debug("add now? %d", command->add);
+
+        // the action takes places here, depending on command
+        // take_action(command);
         
         // prepare string for next prompt
-        prompt_string = NULL; // or memset?
+        prompt_string = NULL;
         prompt_string = change_prompt(chain);
     }
 

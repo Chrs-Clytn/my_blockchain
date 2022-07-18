@@ -1,6 +1,8 @@
 #include "helpers.h"
+#include "string_mgmt.h"
 
 static char *reverse_string(char *word);
+static int find_str_num(char *str, char *sep);
 
 int my_atoi(char *str)
 {
@@ -101,4 +103,60 @@ static char *reverse_string(char *word)
         end--;
     }
     return word;
+}
+
+string_array *my_split(char *str, char *sep)
+{
+    // set up the struct that will be returned
+    string_array *structPtr;
+    structPtr = malloc(sizeof(string_array));
+    if (structPtr == NULL)
+        printf("Error\n");
+
+    // find how many separated strings there will be
+    int size = find_str_num(str, sep);
+    structPtr->size = size + 1;
+    structPtr->array = (char**)malloc(sizeof(char*) * size);
+
+    // if input is empty
+    if (*str == '\0' && *sep == '\0')
+    {
+        structPtr->size = 1;
+        structPtr->array[0] = str;
+        return structPtr;
+    }    
+
+    int i = 0;
+    int j;
+    int strCount = 0;
+    int len = my_strlen(str) + 1;
+
+    // go through input string, malloc space for each output string and assign chars till sep is hit
+    while (str[i] != '\0')
+    {   
+        structPtr->array[strCount] = (char*)malloc(sizeof(char) * len);
+        for (j = 0; str[i] != *sep && str[i] != '\0'; j++)
+        {
+            structPtr->array[strCount][j] = str[i];
+            i++;
+        }
+        structPtr->array[strCount][j] = '\0';
+        strCount++;
+        if (str[i]) i++;
+    }
+    return structPtr;
+}
+
+static int find_str_num(char *str, char *sep)
+{
+    int strNum = 0;
+    if (str && *str != '\0')
+        strNum = 1;
+
+    for (int i = 0; str[i] != '\0'; i++)
+    {
+        if (str[i] == *sep && str[i + 1] != '\0')
+            strNum++;
+    }
+    return strNum;
 }

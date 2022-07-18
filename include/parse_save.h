@@ -12,9 +12,23 @@
 
 #define MAX_INPUT_SIZE 128
 
+#ifndef COMMAND_S
+#define COMMAND_S
+typedef struct command_s {
+    bool add;
+    bool rm;
+    bool ls;
+    bool sync;
+    bool node;
+    bool block;
+    int nid;
+    int bid;
+} command_t;
+#endif
+
 char *get_input();
-void parse_input(char *input, chain_t chain);
-char *change_prompt(chain_t chain);
+command_t *parse_input(char *input);
+char *change_prompt(chain_t *chain);
 void save_blockchain();
 
 #endif

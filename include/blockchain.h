@@ -11,7 +11,7 @@
 typedef struct chain_s {
     bool synced;
     int nodes;
-} chain_t;
+} chain_t;          // also put head of node list in here?
 #endif
 
 #ifndef BLOCK_S

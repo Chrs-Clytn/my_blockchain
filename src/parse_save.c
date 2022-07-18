@@ -17,31 +17,52 @@ char *get_input()
     return input;
 }
 
-void parse_input(char *input, chain_t chain)  // all the functionality (append, remove, list, sync) comes in here!!
+command_t *parse_input(char *input)  // all the functionality (append, remove, list, sync) comes in here!!
 {
-    debug("input: %s", input);
-    // create string arr for all the input items
-    // char **input_arr = NULL;
+    // create command struct and set all fields to 0
+    command_t *command = malloc(sizeof(command_t));
+    if (command == NULL)
+        printf("%s", ERR_1);
 
-    // use my_split or one of those to take each input item separately
-    // if (my_strcmp("add", input_arr[0]) == 0)
-    //  append_node()
-    // etc...
+    command->add = false;
+    command->rm = false;
+    command->ls = false;
+    command->sync = false;
+    command->node = false;
+    command->block = false;
+    command->nid = false;
+    command->bid = false;
+
+    debug("input: %s", input);
+    // create string arr for all the input items by using my_split on the input
+    string_array *input_arr = my_split(input, " ");
+
+    // go through string arr, fill command struct according to input
+    for (int i = 0; i < input_arr->size - 1; i++)
+    {
+        if (my_strcmp("add", input_arr->array[i]) == 0)
+        {
+            debug("ADD");
+            command->add = true;
+        }
+        // etc.
+    }
+
+    return command;
 }
 
-char *change_prompt(chain_t chain)
+char *change_prompt(chain_t *chain)
 {
     /// build prompt str from basic chain info ///
-
     // create string from node size for malloc
-    char *node_size = my_itoa(chain.nodes);
+    char *node_size = my_itoa(chain->nodes);
     int len = my_strlen(node_size) + 1;
 
     char *prompt = malloc(sizeof(char) * len + 1); // '+ 1' is the 'synced' char
     prompt[len] = '\0';
 
     // set synced char in the string
-    if (chain.synced == true)
+    if (chain->synced == true)
         prompt[0] = 's';
     else
         prompt[0] = '-';
