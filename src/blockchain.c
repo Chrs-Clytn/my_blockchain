@@ -151,9 +151,9 @@ void listPrinter(node_t *node_head, char *argument) // generic list printer
         }
 }
 
-void take_action(command_t *command, chain_t *chain)
+void action_node(command_t *command, chain_t *chain)
 {
-    if((command->add == true) && (command->node == true)) // add node
+    if((command->add == true)) // add node
     {
         while(chain->head != NULL) // loop through nodes
         {
@@ -164,7 +164,7 @@ void take_action(command_t *command, chain_t *chain)
             chain->head = chain->head->next;
         }
     }
-    if((command->rm == true) && (command->node == true)) // remove node
+    if((command->rm == true)) // remove node
     {
         while(chain->head != NULL) // loop through nodes
         {
@@ -175,7 +175,11 @@ void take_action(command_t *command, chain_t *chain)
                 printf("%s\n", ERR_4);
         }    
     }
-    if((command->add == true) && (command->block == true)) // add block
+}
+
+void action_block(command_t *command, chain_t *chain)
+{
+    if((command->add == true)) // add block
     {
         // need to add coverage for if * is used to edit all nodes
 
@@ -190,7 +194,7 @@ void take_action(command_t *command, chain_t *chain)
             chain->head = chain->head->next;
         }
     }
-    if((command->rm == true) && (command->block == true)) // remove block
+    if((command->rm == true)) // remove block
     {
         while(chain->head != NULL) // loop through nodes
         {
@@ -201,11 +205,23 @@ void take_action(command_t *command, chain_t *chain)
                 printf("%s\n", ERR_5);
         }
     }
+}
+
+void take_action(command_t *command, chain_t *chain)
+{
+    if(command->node == true) // we know the node is being affected
+        action_node(command, chain);
+    if(command->block == true) // we know the block is being affected
+        action_block(command, chain);
     if(command->ls == true)  // ls 
     {
-        if(command->ls_blocks != true)
-            listPrinter(chain->head, "no long");
         if(command->ls_blocks == true)
             listPrinter(chain->head, "-l");
+        else
+            listPrinter(chain->head, "no long");
     }
 }
+
+// Need to add a sync function
+// loop through nodes and find node with most blocks,
+//ccopy blocks from that node to all other nodes
