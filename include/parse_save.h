@@ -38,5 +38,6 @@ char *get_input();
 command_t *parse_input(char *input);
 char *change_prompt(chain_t *chain);
 void save_blockchain();
+void take_action(command_t *command, chain_t *chain);
 
 #endif

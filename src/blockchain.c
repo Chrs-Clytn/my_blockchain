@@ -42,8 +42,8 @@ block_t *append_block(block_t *block_head, char *b_id) // this appends to the bl
 void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes to know where to append the blocks
 {
     node_t *current = node_head;
-    char *comp = atoi(n_id);
-    if (strcmp(comp, "*")) // if node id == * append block to all nodes
+    char *comp = my_itoa(n_id);
+    if (my_strcmp(comp, "*")) // if node id == * append block to all nodes
     {
         while (current != NULL) // loop through nodes
         {
@@ -65,8 +65,8 @@ void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes 
 void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
 {
     node_t *temp, *current, *prev;
-    char *comp = atoi(n_id);
-    if (strcmp(comp, "*")) // if node id == * delete all nodes
+    char *comp = my_itoa(n_id);
+    if (my_strcmp(comp, "*")) // if node id == * delete all nodes
     {
         current = node_head;
         while (current != NULL) // this should loop through all nodes in list, setting the current->next to NULL and freeing the current. not convinced this will work. Need to test once stuff is up and running
@@ -101,7 +101,7 @@ void remove_blocks(node_t *node_head, char *b_id, int n_id) // function to remov
     {
         while (node_head->block_head != NULL) // while the blockhead exists and isnt null
         {
-            if (strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
+            if (my_strcmp(node_head->block_head->next->bId, b_id)) // use my_strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
             {
                 prev = node_head->block_head;
                 temp = node_head->block_head->next;
@@ -122,7 +122,7 @@ void listPrinter(node_t *node_head, char *argument) // generic list printer
         printf("%s\n", node_head->nId);
         node_head = node_head->next;
     }
-    if (strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
+    if (my_strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
     {
         while (node_head != NULL)
         {
@@ -136,4 +136,10 @@ void listPrinter(node_t *node_head, char *argument) // generic list printer
             node_head = node_head->next;
         }
     }
+}
+
+void take_action(command_t *command, chain_t *chain)
+{
+    node_t *node_head = chain->head;    
+    
 }
