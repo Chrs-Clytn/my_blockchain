@@ -1,17 +1,26 @@
 #include "main.h"
 
-int main(void)
-{
-    chain_t *chain = malloc(sizeof(chain_t));
-    if (chain == NULL)
-        printf("%s", ERR_1);
-        
-    // if saved blockchain exists, load it here
-    // chain = open_chain(argv[1]);  // chain struct might need more info on actual nodes and blocks
-
+int main(int ac, char **av)
+{     
+    chain_t *chain = NULL;
+    // if chain exists, open it & save info to chain struct
+    if (ac == 2)
+    {
+        chain = open_chain(av[1]);
+        if (chain == NULL)
+            return -1;
+    }
     // else create empty blockchain
-    chain->synced = true;
-    chain->nodes = 0;
+    else
+    {
+        chain = malloc(sizeof(chain_t));
+        if (chain == NULL)
+            printf("%s", ERR_1);
+            
+        chain->synced = true;
+        chain->nodes = 0;
+        chain->head = NULL;
+    }
 
     // set strings for first prompt
     char *prompt_string = change_prompt(chain);
@@ -37,23 +46,30 @@ int main(void)
         command_t *command = parse_input(input);
         debug("add now? %d", command->add);
         debug("node? %d", command->node);
-        debug("id? %d", command->id);
+        debug("node_id? %d", command->cmd_node_id);
+        debug("block_id? %s", command->cmd_block_id);
         debug("all? %d", command->all);
+        debug("ls? %d", command->ls);
+        debug("ls blocks? %d", command->ls_blocks);
 
         // the action takes places here, depending on command
-        // take_action(command);
+        // take_action(command, chain);
         
         // prepare string for next prompt
         prompt_string = NULL;
         prompt_string = change_prompt(chain);
+
+        // empty & free command for next round
+        command = NULL;
+        free(command);
     }
 
     // when the user quit, input still has to be freed
     if (input)
-    {
-        input = NULL;
         free(input);
-    }
+    
+    free(chain);
+
     return 0;
 }
 
