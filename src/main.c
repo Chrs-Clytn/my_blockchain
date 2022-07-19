@@ -62,6 +62,7 @@ int main(int ac, char **av)
         // empty & free command for next round
         if (command->cmd_block_id)
             free(command->cmd_block_id);
+            
         command = NULL;
         free(command);
     }
