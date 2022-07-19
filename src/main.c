@@ -60,6 +60,9 @@ int main(int ac, char **av)
         prompt_string = change_prompt(chain);
 
         // empty & free command for next round
+        if (command->cmd_block_id)
+            free(command->cmd_block_id);
+            
         command = NULL;
         free(command);
     }
