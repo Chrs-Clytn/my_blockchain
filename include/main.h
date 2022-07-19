@@ -18,11 +18,11 @@ typedef struct prompt_s {
 } prompt_t;
 #endif
 
-#define ERR_1 "no more resources available on the computer\n"
-#define ERR_2 "this node already exists\n"
-#define ERR_3 "this block already exists\n"
-#define ERR_4 "node doesn't exist\n"
-#define ERR_5 "block doesn't exist\n"
-#define ERR_6 "command not found\n"
+#define ERR_1 "No more resources available on the computer.\n"
+#define ERR_2 "This node already exists.\n"
+#define ERR_3 "This block already exists.\n"
+#define ERR_4 "Node doesn't exist.\n"
+#define ERR_5 "Block doesn't exist.\n"
+#define ERR_6 "Command not found.\n"
 
 #endif

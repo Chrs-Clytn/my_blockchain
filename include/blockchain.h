@@ -6,14 +6,6 @@
 #include <unistd.h>
 #include <stdbool.h>
 
-#ifndef CHAIN_S
-#define CHAIN_S
-typedef struct chain_s {
-    bool synced;
-    int nodes;
-} chain_t;          // also put head of node list in here?
-#endif
-
 #ifndef BLOCK_S
 #define BLOCK_S
 typedef struct block_s {
@@ -29,6 +21,15 @@ typedef struct node_s {
     int nId;
     struct node_s *next;
 } node_t;
+#endif
+
+#ifndef CHAIN_S
+#define CHAIN_S
+typedef struct chain_s {
+    bool synced;
+    int nodes;
+    node_t *head;
+} chain_t;
 #endif
 
 node_t *append_node(node_t *head, int n_id);
