@@ -1,10 +1,22 @@
 #include "blockchain.h"
+<<<<<<< Updated upstream:blockchain.c
+=======
+#include "helpers.h"
+#include "string_mgmt.h"
+#include "main.h"
+#include "parse_save.h"
+
+// replace lib functions with self-made functions; these are either in helpers.c (include helpers.h if necessary) or string_mgmt.c
+>>>>>>> Stashed changes:src/blockchain.c
+
 
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
-    if (node_head->nId == NULL) // if node_head is empty, fill and return node_head
+    if (my_itoa(node_head->nId) == NULL) // if node_head is empty, fill and return node_head
     {
-        block_t *block_head = NULL;
+        block_t *block_head = malloc(sizeof(block_t));
+        block_head->bId = NULL;
+        block_head->next = NULL;
         node_head->nId = n_id;
         node_head->next = NULL;
         return node_head;
@@ -12,7 +24,9 @@ node_t *append_node(node_t *node_head, int n_id) // this appends to the node str
     while (node_head->next != NULL) // otherwise loop through list until we reach the last entry
         node_head = node_head->next;
     node_t *new = (node_t *)malloc(sizeof(node_t)); // allocate memory to a new node and fill with node id.
-    block_t *block_head = NULL;
+    block_t *block_head = malloc(sizeof(block_t));
+    block_head->bId = NULL;
+    block_head->next = NULL;
     new->nId = n_id;
     new->next = NULL;
     node_head->next = new;
@@ -39,8 +53,8 @@ block_t *append_block(block_t *block_head, char *b_id) // this appends to the bl
 void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes to know where to append the blocks
 {
     node_t *current = node_head;
-    char *comp = atoi(n_id);
-    if (strcmp(comp, "*")) // if node id == * append block to all nodes
+    char *comp = my_itoa(n_id);
+    if (my_strcmp(comp, "*")) // if node id == * append block to all nodes
     {
         while (current != NULL) // loop through nodes
         {
@@ -62,8 +76,8 @@ void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes 
 void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
 {
     node_t *temp, *current, *prev;
-    char *comp = atoi(n_id);
-    if (strcmp(comp, "*")) // if node id == * delete all nodes
+    char *comp = my_itoa(n_id);
+    if (my_strcmp(comp, "*")) // if node id == * delete all nodes
     {
         current = node_head;
         while (current != NULL) // this should loop through all nodes in list, setting the current->next to NULL and freeing the current. not convinced this will work. Need to test once stuff is up and running
@@ -91,14 +105,23 @@ void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based
     }
 }
 
+<<<<<<< Updated upstream:blockchain.c
 void remove_blocks(node_t *node_head, char* b_id, int n_id) // function to remove blocks, will require some testing
+=======
+/*
+void remove_blocks(node_t *node_head, char *b_id, int n_id) // function to remove blocks, will require some testing
+>>>>>>> Stashed changes:src/blockchain.c
 {
     block_t *temp, *current, *prev;
     while (node_head != NULL) // loop through all nodes
     {
         while(node_head->block_head != NULL) // while the blockhead exists and isnt null
         {
+<<<<<<< Updated upstream:blockchain.c
             if(strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
+=======
+            if (my_strcmp(node_head->block_head->next->bId, b_id)) // use strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
+>>>>>>> Stashed changes:src/blockchain.c
             {
                 prev = node_head->block_head;
                 temp = node_head->block_head->next;
@@ -110,27 +133,66 @@ void remove_blocks(node_t *node_head, char* b_id, int n_id) // function to remov
         }
         node_head = node_head->next;
     }
-}
+} */
 
 void listPrinter(node_t* node_head, char* argument) //generic list printer
 {
     while (node_head != NULL) // if no -l argument, print out node id and \n
     {
-        printf("%s\n", node_head->nId);
+        printf("%d\n", node_head->nId);
         node_head = node_head->next;
     }
+<<<<<<< Updated upstream:blockchain.c
     if(strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
     {
         while (node_head != NULL)
         {
             printf("%s : ", node_head->nId);
             while(node_head->block_head != NULL)
+=======
+    if (my_strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
+    {
+        while (node_head != NULL)
+        {
+            printf("%d : ", node_head->nId);
+            while (node_head->block_head != NULL)
+>>>>>>> Stashed changes:src/blockchain.c
             {
-                printf("%d, ", node_head->block_head->bId);
+                printf("%s, ", node_head->block_head->bId);
                 node_head->block_head = node_head->block_head->next;
             }
             printf("\n");
             node_head = node_head->next;
         }
     }
+}
+
+void take_action(command_t *command, chain_t *chain)
+{
+    if(command->add == true && command->node == true)
+    {
+        while(chain->node_head != NULL)
+        {
+            // if(chain->node_head->nId == command->node_id)
+            //     printf("%s", ERR_2);
+            // else
+            // {
+                node_t *node_head = (node_t *)malloc(sizeof(node_t));
+                append_node(node_head, command->node_id);
+            //}
+        }
+        listPrinter(chain->node_head, "-l");
+    }
+    // if(command->add == true && command->block == true && my_strcmp(my_itoa(command->node_id), "*") != 0)
+    // {
+    //     while(chain->node_head != NULL)
+    //     {
+    //         if(chain->node_head->nId == command->node_id)
+    //         {
+    //             append_block(chain->node_head->block_head, command->block_id);
+    //         }
+    //         else
+    //         printf("%s", ERR_4);
+    //     }
+    // }
 }
