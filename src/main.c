@@ -53,7 +53,7 @@ int main(int ac, char **av)
         debug("ls blocks? %d", command->ls_blocks);
 
         // the action takes places here, depending on command
-        // take_action(command, chain);
+        take_action(command, chain);
         
         // prepare string for next prompt
         prompt_string = NULL;
