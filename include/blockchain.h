@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include "parse_save.h"
+#include "string_mgmt.h"
 
 #ifndef BLOCK_S
 #define BLOCK_S

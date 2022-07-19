@@ -1,7 +1,4 @@
 #include "blockchain.h"
-#include "string_mgmt.h"
-
-// replace lib functions with self-made functions; these are either in helpers.c (include helpers.h if necessary) or string_mgmt.c
 
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
