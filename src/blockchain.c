@@ -1,13 +1,16 @@
 #include "blockchain.h"
 #include "string_mgmt.h"
+#include "parse_save.h"
 
 // replace lib functions with self-made functions; these are either in helpers.c (include helpers.h if necessary) or string_mgmt.c
 
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
-    if (node_head->nId == NULL) // if node_head is empty, fill and return node_head
+    if (node_head == NULL) // if node_head is empty, fill and return node_head
     {
         block_t *block_head = NULL;
+        block_head->bId = NULL;
+        block_head->next = NULL;
         node_head->nId = n_id;
         node_head->next = NULL;
         return node_head;
@@ -16,6 +19,8 @@ node_t *append_node(node_t *node_head, int n_id) // this appends to the node str
         node_head = node_head->next;
     node_t *new = (node_t *)malloc(sizeof(node_t)); // allocate memory to a new node and fill with node id.
     block_t *block_head = NULL;
+    block_head->bId = NULL;
+    block_head->next = NULL;
     new->nId = n_id;
     new->next = NULL;
     node_head->next = new;
@@ -94,52 +99,113 @@ void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based
     }
 }
 
-void remove_blocks(node_t *node_head, char *b_id, int n_id) // function to remove blocks, will require some testing
+void remove_blocks(block_t *block_head, char *b_id) // function to remove blocks, will require some testing
 {
     block_t *temp, *current, *prev;
-    while (node_head != NULL) // loop through all nodes
+    if (my_strcmp(b_id, "*") == 0) // if node id == * delete all nodes
     {
-        while (node_head->block_head != NULL) // while the blockhead exists and isnt null
+        current = block_head;
+        while (current != NULL) // this should loop through all nodes in list, setting the current->next to NULL and freeing the current. not convinced this will work. Need to test once stuff is up and running
         {
-            if (my_strcmp(node_head->block_head->next->bId, b_id)) // use my_strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
-            {
-                prev = node_head->block_head;
-                temp = node_head->block_head->next;
-                current = node_head->block_head->next->next;
-                prev->next = current;
-                temp->next = NULL;
-                free(temp);
-            }
+            temp = current->next;
+            current->next = NULL;
+            free(block_head);
+            current = temp;
         }
-        node_head = node_head->next;
+    }
+    while (block_head != NULL) // while the blockhead exists and isnt null
+    {
+        if (my_strcmp(block_head->next->bId, b_id)) // use my_strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
+        {
+            prev = block_head;
+            temp = block_head->next;
+            current = block_head->next->next;
+            prev->next = current;
+            temp->next = NULL;
+            free(temp);
+        }
     }
 }
 
 void listPrinter(node_t *node_head, char *argument) // generic list printer
 {
-    while (node_head != NULL) // if no -l argument, print out node id and \n
-    {
-        printf("%s\n", node_head->nId);
-        node_head = node_head->next;
-    }
     if (my_strcmp(argument, "-l")) // if argument -l provided print out node id, followed by block ids followed by \n
     {
         while (node_head != NULL)
         {
-            printf("%s : ", node_head->nId);
+            printf("%d : ", node_head->nId);
             while (node_head->block_head != NULL)
             {
-                printf("%d, ", node_head->block_head->bId);
+                printf("%s, ", node_head->block_head->bId);
                 node_head->block_head = node_head->block_head->next;
             }
             printf("\n");
             node_head = node_head->next;
         }
     }
+    else
+        while (node_head != NULL) // if no -l argument, print out node id and \n
+        {
+            printf("%d\n", node_head->nId);
+            node_head = node_head->next;
+        }
 }
 
 void take_action(command_t *command, chain_t *chain)
 {
-    node_t *node_head = chain->head;    
-    
+    if((command->add == true) && (command->node == true)) // add node
+    {
+        while(chain->head != NULL) // loop through nodes
+        {
+            if(chain->head->nId == command->cmd_node_id) // compare the node ids for a match
+                printf("%s", ERR_2);
+            else if(chain->head->next == NULL) // else if next is NULL, no more nodes to check so append a new node.
+                append_node(chain->head, command->cmd_node_id);
+            chain->head = chain->head->next;
+        }
+    }
+    if((command->rm == true) && (command->node == true)) // remove node
+    {
+        while(chain->head != NULL) // loop through nodes
+        {
+            // need to add coverage for *
+            if(chain->head->nId == command->cmd_node_id)
+                remove_nodes(chain->head, command->cmd_node_id);
+            else if (chain->head->next == NULL)
+                printf("%s\n", ERR_4);
+        }    
+    }
+    if((command->add == true) && (command->block == true)) // add block
+    {
+        // need to add coverage for if * is used to edit all nodes
+
+        while(chain->head != NULL) // loop through nodes
+        {
+            if(chain->head->nId == command->cmd_node_id) // compare node ids
+                append_block(chain->head->block_head, command->cmd_block_id); // append block to specific node
+            else if (chain->head->next == NULL)
+                printf("%s\n", ERR_4);
+            // should also add something more specific to counter whether block also already exists.
+
+            chain->head = chain->head->next;
+        }
+    }
+    if((command->rm == true) && (command->block == true)) // remove block
+    {
+        while(chain->head != NULL) // loop through nodes
+        {
+            // need to add coverage for *
+            if(chain->head->block_head->bId == command->cmd_block_id)
+                remove_blocks(chain->head->block_head, command->cmd_block_id);
+            else if (chain->head->next == NULL)
+                printf("%s\n", ERR_5);
+        }
+    }
+    if(command->ls == true)  // ls 
+    {
+        if(command->ls_blocks != true)
+            listPrinter(chain->head, "no long");
+        if(command->ls_blocks == true)
+            listPrinter(chain->head, "-l");
+    }
 }

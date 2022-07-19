@@ -33,7 +33,7 @@ char *get_input()
 
     // read input and close buffer
     int readBytes = 0;
-    readBytes = read(0, buff, MAX_INPUT_SIZE);
+    readBytes = read(0, buff, MAX_INPUT_SIZE - 1);
     buff[readBytes - 1] = '\0';
 
     // copy buffer for better handling & return

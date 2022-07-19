@@ -14,12 +14,14 @@ int main(int ac, char **av)
     else
     {
         chain = malloc(sizeof(chain_t));
+        //node_t *node_head = malloc(sizeof(node_t));
+        node_t *node_head = NULL;
         if (chain == NULL)
             printf("%s", ERR_1);
             
         chain->synced = true;
         chain->nodes = 0;
-        chain->head = NULL;
+        chain->head = node_head; // = malloc(sizeof(node_t));;
     }
 
     // set strings for first prompt
@@ -30,6 +32,8 @@ int main(int ac, char **av)
     {
         // print prompt to terminal, then reset input before get_input()
         printf("[%s]> %s\n", prompt_string, input);
+        //printf("[%s]> ", prompt_string);  // might be better to print the prompt out individually
+        // scanf("%s", input);
         
         input = NULL;
         free(input);
