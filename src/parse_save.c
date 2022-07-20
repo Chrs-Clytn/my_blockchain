@@ -24,22 +24,46 @@ chain_t *open_chain(char *filename)
 }
 
 
-char *get_input()
+char *get_input(char *prompt_string)
 {
     // set up strings
     char *input = NULL;
     char buff[MAX_INPUT_SIZE];
+    char *s1 = &prompt_string[0];
+    char *s2 = &prompt_string[1];
     my_memset(buff, '\0', MAX_INPUT_SIZE - 1);
-
+    write(1, "[", 1);
+    write(1, s1, 1);
+    write(1, s2, 1);
+    write(1, "]", 1);
+    write(1, ">", 1);
+    write(1, " ", 1);
     // read input and close buffer
     int readBytes = 0;
-    readBytes = read(0, buff, MAX_INPUT_SIZE - 1);
+    readBytes = read(0, buff, MAX_INPUT_SIZE);
     buff[readBytes - 1] = '\0';
 
     // copy buffer for better handling & return
     input = my_strdup(buff);
     return input;
 }
+
+// char *get_input()
+// {
+//     // set up strings
+//     char *input = NULL;
+//     char buff[MAX_INPUT_SIZE];
+//     my_memset(buff, '\0', MAX_INPUT_SIZE - 1);
+
+//     // read input and close buffer
+//     int readBytes = 0;
+//     readBytes = read(0, buff, MAX_INPUT_SIZE - 1);
+//     buff[readBytes - 1] = '\0';
+
+//     // copy buffer for better handling & return
+//     input = my_strdup(buff);
+//     return input;
+// }
 
 command_t *parse_input(char *input)  // all the functionality (append, remove, list, sync) comes in here!!
 {
@@ -124,5 +148,5 @@ char *change_prompt(chain_t *chain)
 
 void save_blockchain()
 {
-
+    
 }

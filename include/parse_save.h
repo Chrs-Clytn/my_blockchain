@@ -13,7 +13,7 @@
 #include "string_mgmt.h"
 #include "dbg.h"
 
-#define MAX_INPUT_SIZE 128
+#define MAX_INPUT_SIZE 256
 #define ERR_7 "File cannot be opened."
 #define ERR_8 "Not a valid chain file."
 
@@ -38,6 +38,6 @@ char *get_input();
 command_t *parse_input(char *input);
 char *change_prompt(chain_t *chain);
 void save_blockchain();
-void take_action(command_t *command, chain_t *chain);
+chain_t *take_action(command_t *command, chain_t *chain);
 
 #endif

@@ -37,6 +37,6 @@ block_t *append_block(block_t *block_head, char *b_id);
 void sorter(node_t *node_head, int n_id, char *b_id);
 void remove_nodes(node_t *node_head, int n_id);
 void remove_blocks(block_t *block_head, char *b_id);
-void listPrinter(node_t* node_head, char* argument); 
+int listPrinter(node_t* node_head, char* argument); 
 
 #endif

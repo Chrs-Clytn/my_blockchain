@@ -15,14 +15,20 @@ int main(int ac, char **av)
     {
         chain = malloc(sizeof(chain_t));
         //node_t *node_head = malloc(sizeof(node_t));
+        //block_t *block_head = malloc(sizeof(block_t));
         node_t *node_head = NULL;
         if (chain == NULL)
             printf("%s", ERR_1);
             
         chain->synced = true;
         chain->nodes = 0;
+        //chain->head = NULL;
         chain->head = node_head; // = malloc(sizeof(node_t));;
+        //chain->head->nId = -1;
+        // chain->head->block_head = block_head;
+        // chain->head->block_head->bId = "ADBCJada";
     }
+    //printf("%s\n", chain->head->block_head->bId);
 
     // set strings for first prompt
     char *prompt_string = change_prompt(chain);
@@ -34,10 +40,11 @@ int main(int ac, char **av)
         printf("[%s]> %s\n", prompt_string, input);
         //printf("[%s]> ", prompt_string);  // might be better to print the prompt out individually
         // scanf("%s", input);
-        
-        input = NULL;
-        free(input);
-        input = get_input();
+        input = get_input(prompt_string);
+
+        // input = NULL;
+        // free(input);
+        // input = get_input();
 
         // exit condition
         if (my_strcmp(input, "quit") == 0)
@@ -57,7 +64,7 @@ int main(int ac, char **av)
         debug("ls blocks? %d", command->ls_blocks);
 
         // the action takes places here, depending on command
-        take_action(command, chain);
+        chain = take_action(command, chain);
         
         // prepare string for next prompt
         prompt_string = NULL;
