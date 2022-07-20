@@ -110,6 +110,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
             command->cmd_block_id = input_arr->array[2];
+            command->cmd_node_id = my_atoi(input_arr->array[3]);
         }
 
         if (input_arr->size > 4 && my_strcmp("*", input_arr->array[3]) == 0)
@@ -148,5 +149,5 @@ char *change_prompt(chain_t *chain)
 
 void save_blockchain()
 {
-    
+
 }
