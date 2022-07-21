@@ -54,7 +54,7 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
     node_t *current = node_head, *temp;
     while (current != NULL)
     {
-        if(node_head->nId == n_id)
+        if(node_head->nId == n_id) // removes the first node bu pointing at the next and free
         {
             temp = node_head;
             node_head = node_head->next;
@@ -70,7 +70,7 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             free(temp);
             return node_head;
         }
-        if(current->next->nId == n_id && current->next->next == NULL)
+        if(current->next->nId == n_id && current->next->next == NULL) // removes te last node by setting to temp, pointing to null and free
         {
             temp = current->next;
             current->next = NULL;
@@ -81,32 +81,40 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
     return node_head;
 }
 
-void remove_blocks(block_t *block_head, char *b_id) // function to remove blocks, will require some testing
+block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove blocks, will require some testing
 {
-    block_t *temp, *current, *prev;
-    if (my_strcmp(b_id, "*") == 0) // if node id == * delete all nodes
-    {
-        current = block_head;
-        while (current != NULL) // this should loop through all nodes in list, setting the current->next to NULL and freeing the current. not convinced this will work. Need to test once stuff is up and running
+        block_t *temp;
+        block_t *current = block_head;
+        while (current != NULL)
         {
-            temp = current->next;
-            current->next = NULL;
-            free(block_head);
-            current = temp;
+            if (my_strcmp(block_head->bId, b_id) == 0) // removes the first block
+            {
+                temp = block_head;
+                block_head = block_head->next;
+                temp->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else if (((my_strcmp(current->next->bId, b_id)) == 0) && current->next->next != NULL) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
+            {
+                temp = current->next;
+                current->next = current->next->next;
+                temp->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else if (my_strcmp(current->bId, b_id) == 0 && current->next->next == NULL)
+            {
+                temp = current->next;
+                current->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else
+                break;
+            current = current->next;
         }
-    }
-    while (block_head != NULL) // while the blockhead exists and isnt null
-    {
-        if (my_strcmp(block_head->next->bId, b_id)) // use my_strcmp to see whter the bid matches, if it does switch some nodes around and free the node with matching bid
-        {
-            prev = block_head;
-            temp = block_head->next;
-            current = block_head->next->next;
-            prev->next = current;
-            temp->next = NULL;
-            free(temp);
-        }
-    }
+    return block_head;
 }
 
 node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
@@ -198,18 +206,14 @@ node_t *action_block(command_t *command, chain_t *chain)
     if ((command->add == true)) // add block
     {
         if (chain->head == NULL)
-        {
-            printf("202 - %s\n", ERR_4);
-        }
+            printf("%s\n", ERR_4);
         while (currNode != NULL) // loop through nodes
         {
-            // need to add coverage for if * is used to edit all nodes
-            if (command->all == true)
+            if (command->all == true) // if * is called
             {
                 while (currNode != NULL) // loop through nodes
                 {
                     currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
-                    //printf("star sort works");
                     currNode = currNode->next;
                 }
                 return chain->head;
@@ -217,27 +221,23 @@ node_t *action_block(command_t *command, chain_t *chain)
             if (currNode->nId == command->cmd_node_id) // compare node ids
             {
                 currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
-                // printf("207 current node id %d\n", currNode->nId);
-                // printf("current bid = %s\n", currNode->block_head->bId);
                 return chain->head;
             }
             else if (currNode->next == NULL)
-                printf("215 %s\n", ERR_4);
+                printf("%s\n", ERR_4);
             // should also add something more specific to counter whether block also already exists.
             currNode = currNode->next;
         }
     }
-    // if((command->rm == true)) // remove block
-    // {
-    //     while(currNode != NULL) // loop through nodes
-    //     {
-    //         // need to add coverage for *
-    //         if(currNode->block_head->bId == command->cmd_block_id)
-    //             remove_blocks(currNode->block_head, command->cmd_block_id);
-    //         else if (currNode->next == NULL)
-    //             printf("%s\n", ERR_5);
-    //     }
-    // }
+    if((command->rm == true)) // remove block
+    {
+        while(currNode != NULL) // loop through nodes
+        {
+            block_t *currBlock = currNode->block_head;
+            remove_blocks(currBlock, command->cmd_block_id);
+            currNode = currNode->next;
+        }
+     }
     return chain->head;
 }
 
