@@ -107,7 +107,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
         if (my_strcmp("block", input_arr->array[i]) == 0)
             command->block = true;
 
-        if (input_arr->size > 3 && my_strcmp("node", input_arr->array[1]) == 0)
+        if (input_arr->size > 3 && my_strcmp("node", input_arr->array[1]) == 0 && (my_strcmp("add", input_arr->array[1])))
             command->cmd_node_id = my_atoi(input_arr->array[2]);
         if (input_arr->size > 3 && my_strcmp("block", input_arr->array[1]) == 0)
         {
@@ -117,6 +117,8 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
         }
 
         if (input_arr->size > 4 && my_strcmp("*", input_arr->array[3]) == 0)
+            command->all = true;
+        if (input_arr->size > 3 && my_strcmp("*", input_arr->array[2]) == 0)
             command->all = true;
     }
 

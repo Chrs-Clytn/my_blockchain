@@ -57,13 +57,14 @@ int main(int ac, char **av)
         //printf("input is = %s\n", input);
         command_t *command = parse_input(input);
         // debug("add now? %d", command->add);
-        // debug("node? %d", command->node);
-        // debug("node_id? %d", command->cmd_node_id);
+        debug("node? %d", command->node);
+        debug("node_id? %d", command->cmd_node_id);
         // debug("block_id? %s", command->cmd_block_id);
-        // debug("all? %d", command->all);
+        debug("all? %d", command->all);
         // debug("ls? %d", command->ls);
         // debug("ls blocks? %d", command->ls_blocks);
-        // debug("rm? %d", command->rm);
+        debug("rm? %d", command->rm);
+        debug("nodes? %d", chain->nodes);
 
         // the action takes places here, depending on command
         chain = take_action(command, chain);

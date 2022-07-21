@@ -35,7 +35,7 @@ typedef struct chain_s {
 node_t *append_node(node_t *head, int n_id);
 block_t *append_block(block_t *block_head, char *b_id);
 void sorter(node_t *node_head, int n_id, char *b_id);
-void remove_nodes(node_t *node_head, int n_id);
+node_t *remove_nodes(node_t *node_head, int n_id);
 void remove_blocks(block_t *block_head, char *b_id);
 node_t *listPrinter(node_t* node_head, char* argument); 
 
