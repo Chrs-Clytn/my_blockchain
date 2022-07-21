@@ -40,7 +40,7 @@ char *get_input(char *prompt_string)
     write(1, " ", 1);
     // read input and close buffer
     int readBytes = 0;
-    readBytes = read(0, buff, MAX_INPUT_SIZE);
+    readBytes = read(0, buff, MAX_INPUT_SIZE - 1);
     buff[readBytes - 1] = '\0';
 
     // copy buffer for better handling & return
@@ -86,8 +86,11 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     // create string arr for all the input items by using my_split on the input
     string_array *input_arr = my_split(input, " ");
 
+    // USE SWITCH CASE?
+    // We should also add some security in here incase block or node is input, but wrong number of arguments
+
     // go through string arr, fill command struct according to input
-    for (int i = 0; i < input_arr->size - 1; i++)                       // USE SWITCH CASE?
+    for (int i = 0; i < input_arr->size - 1; i++)                       
     {
         if (my_strcmp("add", input_arr->array[i]) == 0)
             command->add = true;

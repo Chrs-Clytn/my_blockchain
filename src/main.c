@@ -37,7 +37,7 @@ int main(int ac, char **av)
     while (true)
     {
         // print prompt to terminal, then reset input before get_input()
-        printf("[%s]> %s\n", prompt_string, input);
+        //printf("[%s]> %s\n", prompt_string, input);
         //printf("[%s]> ", prompt_string);  // might be better to print the prompt out individually
         // scanf("%s", input);
         input = get_input(prompt_string);
@@ -54,14 +54,16 @@ int main(int ac, char **av)
         }
 
         // input parsing
+        //printf("input is = %s\n", input);
         command_t *command = parse_input(input);
-        debug("add now? %d", command->add);
-        debug("node? %d", command->node);
-        debug("node_id? %d", command->cmd_node_id);
-        debug("block_id? %s", command->cmd_block_id);
-        debug("all? %d", command->all);
-        debug("ls? %d", command->ls);
-        debug("ls blocks? %d", command->ls_blocks);
+        // debug("add now? %d", command->add);
+        // debug("node? %d", command->node);
+        // debug("node_id? %d", command->cmd_node_id);
+        // debug("block_id? %s", command->cmd_block_id);
+        // debug("all? %d", command->all);
+        // debug("ls? %d", command->ls);
+        // debug("ls blocks? %d", command->ls_blocks);
+        // debug("rm? %d", command->rm);
 
         // the action takes places here, depending on command
         chain = take_action(command, chain);

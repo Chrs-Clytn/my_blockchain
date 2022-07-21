@@ -6,22 +6,21 @@
 
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
-    //printf("9 blockchain\n");
     if (node_head == NULL) // if node_head is empty, fill and return node_head
     {
+        (printf("11, node head was NULL\n"));
         node_t *node_head = malloc(sizeof(node_t));
         node_head->block_head = NULL;
         node_head->nId = n_id;
         node_head->next = NULL;
         return node_head;
     }
+    printf("18, appending new node. node_head->nid = %d\n", node_head->nId);
     node_t *current = node_head;
     while (current->next != NULL) // otherwise loop through list until we reach the last entry
         current = current->next;
     node_t *new = (node_t *)malloc(sizeof(node_t)); // allocate memory to a new node and fill with node id.
-    node_head->block_head = NULL;
-    // block_head->bId = NULL;
-    // block_head->next = NULL;
+    new->block_head = NULL;
     new->nId = n_id;
     new->next = NULL;
     current->next = new;
@@ -32,47 +31,23 @@ node_t *append_node(node_t *node_head, int n_id) // this appends to the node str
 block_t *append_block(block_t *block_head, char *b_id) // this appends to the block struct, takes the block_head and block id.
 {
     block_t *current = block_head;
-    //printf("line 34 append block\n");
-    if (block_head == NULL) // if current is empty, fill and return current
+    if (block_head == NULL) // if blockhead is empty, fill and return blockhead
     {
-        //printf("line 37 append block\n");
+        printf("line 36 add new block\n");
         block_t *block_head = malloc(sizeof(block_t));
-        // block_head->bId = NULL;
-        // block_head->next = NULL;
         block_head->bId = b_id;
         block_head->next = NULL;
         return block_head;
     }
     while (current->next != NULL) // otherwise loop through list until we reach the last entry
         current = current->next;
-    block_t *new = (block_t *)malloc(sizeof(block_t)); // allocate memory to a new node and fill with node id.
+    printf("line 44 append block\n");
+    block_t *new = (block_t *)malloc(sizeof(block_t)); // allocate memory to a new block and fill with block id.
     new->bId = b_id;
     new->next = NULL;
     current->next = new;
-    return block_head;
-}
 
-void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes to know where to append the blocks
-{
-    node_t *current = node_head;
-    char *comp = my_itoa(n_id);
-    if (my_strcmp(comp, "*")) // if node id == * append block to all nodes
-    {
-        while (current != NULL) // loop through nodes
-        {
-            append_block(current->block_head, b_id);
-            current = node_head->next;
-        }
-    }
-    else
-    {
-        while (current->next != NULL)
-        {
-            if (current->nId == n_id) // if node id matches the input to the function then we continue
-                append_block(current->block_head, b_id);
-            current = node_head->next;
-        }
-    }
+    return block_head;
 }
 
 void remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
@@ -135,82 +110,91 @@ void remove_blocks(block_t *block_head, char *b_id) // function to remove blocks
     }
 }
 
-int listPrinter(node_t *node_head, char *argument) // generic list printer
+node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
 {
     node_t *current = node_head;
-    if(node_head == NULL)
+    //printf("node head list printer 118 %d\n", node_head->nId);
+    if (node_head == NULL)
     {
         printf("%s\n", ERR_4);
-        return 1;
+        return node_head;
     }
     if (my_strcmp(argument, "-l") == 0) // if argument -l provided print out node id, followed by block ids followed by \n
     {
+        //printf("block head printer, 123 %s\n", node_head->block_head->bId);
         while (current != NULL)
         {
             printf("%d : ", current->nId);
-            while (current->block_head != NULL)
+            block_t *currBlock = current->block_head;
+            while (currBlock != NULL)
             {
-                printf("%s, ", current->block_head->bId);
-                current->block_head = current->block_head->next;
+                printf("%s, ", currBlock->bId);
+                currBlock = currBlock->next;
             }
             printf("\n");
             current = current->next;
         }
+        return node_head;
     }
     else
         while (current != NULL) // if no -l argument, print out node id and \n
         {
             printf("%d\n", current->nId);
-            current = node_head->next;
+            current = current->next;
         }
-    return 0;
+    return node_head;
 }
 
 node_t *action_node(command_t *command, chain_t *chain)
 {
     node_t *current = chain->head;
-    if((command->add == true)) // add node
+    if ((command->add == true)) // add node
     {
-        //printf("160 blockchain");
-        if(chain->head == NULL)
+        if (chain->head == NULL)
         {
-            // printf("164 bc\n");
             chain->head = append_node(chain->head, command->cmd_node_id);
-            printf("head node id = %d\n", chain->head->nId);
+            chain->nodes += 1;
+            //printf("head node id = %d\n", chain->head->nId);
             return chain->head;
         }
         else
         {
-            while(current != NULL) // loop through nodes
+            while (current != NULL) // loop through nodes
             {
-                // printf("Here\n");
-                if(current->nId == command->cmd_node_id) // compare the node ids for a match
+                if (current->nId == command->cmd_node_id) // compare the node ids for a match
                     printf("%s", ERR_2);
-                else if(current->next == NULL) // else if next is NULL, no more nodes to check so append a new node.
-                    append_node(current, command->cmd_node_id);
+                else if (current->next == NULL) // else if next is NULL, no more nodes to check so append a new node.
+                {
+                    chain->head = append_node(chain->head, command->cmd_node_id); // give head (lol), rather than current as otherwise we lose our heads (lol)
+                    chain->nodes += 1;
+                    //chain->synced = false;
+                    return chain->head;
+                }
                 current = current->next;
             }
         }
     }
     // if((command->rm == true)) // remove node
     // {
-    //     while(chain->head != NULL) // loop through nodes
+    //     while(current != NULL) // loop through nodes
     //     {
     //         // need to add coverage for *
-    //         if(chain->head->nId == command->cmd_node_id)
-    //             remove_nodes(chain->head, command->cmd_node_id);
-    //         else if (chain->head->next == NULL)
+    //         if(current->nId == command->cmd_node_id)
+    //             remove_nodes(current, command->cmd_node_id);
+    //         else if (current->next == NULL)
     //             printf("%s\n", ERR_4);
-    //     }    
+    //     }
     // }
     return chain->head;
 }
 
+// Blocks dont seem to persist after 1 cycle, need to figure out why.
+// Seems that block_head is equal to NULL after my list printer.
+// is list printer resetting blockhead to null? or cycling through the list maybe....
+
 node_t *action_block(command_t *command, chain_t *chain)
 {
-    //block_t *current = chain->head->block_head;
     node_t *currNode = chain->head;
-    printf("node id in action block 211 %d\n", chain->head->nId);
     if ((command->add == true)) // add block
     {
         // need to add coverage for if * is used to edit all nodes
@@ -222,12 +206,13 @@ node_t *action_block(command_t *command, chain_t *chain)
             {
                 if (currNode->nId == command->cmd_node_id) // compare node ids
                 {
-                    printf("current node id matches provided 223 \n");                                              
                     currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
-                    printf("current bid = %s\n", currNode->block_head->bId);
+                    //printf("207 current node id %d\n", currNode->nId);
+                    //printf("current bid = %s\n", currNode->block_head->bId);
+                    return chain->head;
                 }
                 else if (currNode->next == NULL)
-                    printf("222 - %s\n", ERR_4);
+                    printf("207 - %s\n", ERR_4);
                 // should also add something more specific to counter whether block also already exists.
                 currNode = currNode->next;
             }
@@ -235,12 +220,12 @@ node_t *action_block(command_t *command, chain_t *chain)
     }
     // if((command->rm == true)) // remove block
     // {
-    //     while(chain->head != NULL) // loop through nodes
+    //     while(currNode != NULL) // loop through nodes
     //     {
     //         // need to add coverage for *
-    //         if(chain->head->block_head->bId == command->cmd_block_id)
-    //             remove_blocks(chain->head->block_head, command->cmd_block_id);
-    //         else if (chain->head->next == NULL)
+    //         if(currNode->block_head->bId == command->cmd_block_id)
+    //             remove_blocks(currNode->block_head, command->cmd_block_id);
+    //         else if (currNode->next == NULL)
     //             printf("%s\n", ERR_5);
     //     }
     // }
@@ -249,17 +234,22 @@ node_t *action_block(command_t *command, chain_t *chain)
 
 chain_t *take_action(command_t *command, chain_t *chain)
 {
-    if(command->node == true) // we know the node is being affected
+    if (command->node == true && command->block == false) // we know the node is being affected
         chain->head = action_node(command, chain);
-    printf("node id in take action = %d\n", chain->head->nId);
-    if(command->block == true) // we know the block is being affected
+    // printf("node id in take action = %d\n", chain->head->nId);
+    if (command->block == true) // we know the block is being affected
     {
         chain->head = action_block(command, chain);
-        printf("block in take action = %s\n", chain->head->block_head->bId);
+        //printf("240, block take action = %s\n", chain->head->block_head->bId);
     }
-    if(command->ls == true)  // ls 
+    if (command->ls == true) // ls
     {
-        if(command->ls_blocks == true)
+        if (chain->nodes <= 0)
+        {
+            printf("%s", ERR_4);
+            return chain;
+        }
+        if (command->ls_blocks == true)
             listPrinter(chain->head, "-l");
         else
             listPrinter(chain->head, "no long");
@@ -269,4 +259,27 @@ chain_t *take_action(command_t *command, chain_t *chain)
 
 // Need to add a sync function
 // loop through nodes and find node with most blocks,
-//ccopy blocks from that node to all other nodes
+// ccopy blocks from that node to all other nodes
+
+// void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes to know where to append the blocks
+// {
+//     node_t *current = node_head;
+//     char *comp = my_itoa(n_id);
+//     if (my_strcmp(comp, "*")) // if node id == * append block to all nodes
+//     {
+//         while (current != NULL) // loop through nodes
+//         {
+//             append_block(current->block_head, b_id);
+//             current = node_head->next;
+//         }
+//     }
+//     else
+//     {
+//         while (current->next != NULL)
+//         {
+//             if (current->nId == n_id) // if node id matches the input to the function then we continue
+//                 append_block(current->block_head, b_id);
+//             current = node_head->next;
+//         }
+//     }
+// }
