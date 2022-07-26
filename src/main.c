@@ -49,7 +49,7 @@ int main(int ac, char **av)
         // exit condition
         if (my_strcmp(input, "quit") == 0)
         {
-            save_blockchain();
+            save_blockchain(chain);
             break;
         }
 
@@ -58,12 +58,12 @@ int main(int ac, char **av)
         command_t *command = parse_input(input);
         // debug("add now? %d", command->add);
         // debug("node? %d", command->node);
-        //debug("node_id? %d", command->cmd_node_id);
-        debug("block_id? %s", command->cmd_block_id);
-        debug("all? %d", command->all);
+        // debug("node_id? %d", command->cmd_node_id);
+        // debug("block_id? %s", command->cmd_block_id);
+        // debug("all? %d", command->all);
         // debug("ls? %d", command->ls);
         // debug("ls blocks? %d", command->ls_blocks);
-        debug("rm? %d", command->rm);
+        // debug("rm? %d", command->rm);
         // debug("nodes? %d", chain->nodes);
 
         // the action takes places here, depending on command
@@ -94,22 +94,27 @@ int main(int ac, char **av)
 
 // create function to append to the node struct
 // take node id from prompt and create a node with that id
+// DONE
 
 // create function to append to the block struct and to a specific node
 // take node id add block struct to that node id
 // take block id from prompt and create a block with that id
 // if nid = "*" block is added to all nodes
+// DONE
 
 // create function to remove nodes
 // remove node based on nid
 // if nid = "*" all nodes are removed
+// DONE
 
 // create function to remove blocks
 // remove block based on bid
+// DONE
 
 // create function to list the node identifiers
 // print out nid and "\n"
 // if option -l print out nid followed by ":" space and then bid followed by "," until bid = NULL then "\n"
+// DONE
 
 // create a sync function to copy all blocks to each node
 // iterate through nodes and find one with the most blocks

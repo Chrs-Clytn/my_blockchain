@@ -5,6 +5,7 @@ OBJ = obj/main.o\
 	obj/helpers.o\
 	obj/string_mgmt.o\
 	obj/blockchain.o\
+	obj/action.o\
 
 CFLAGS += -Iinclude -Wall -Wextra -Werror -g3 -fsanitize=address
 
@@ -14,6 +15,7 @@ HEADER = include/main.h\
 	include/helpers.h\
 	include/string_mgmt.h\
 	include/dbg.h\
+	include/action.h\
 
 BIN = bin/my_blockchain
 CC = gcc
@@ -33,6 +35,8 @@ obj/blockchain.o: src/blockchain.c
 obj/helpers.o: src/helpers.c
 	${CC} ${CFLAGS} -c $< -o $@
 obj/string_mgmt.o: src/string_mgmt.c
+	${CC} ${CFLAGS} -c $< -o $@
+obj/action.o: src/action.c
 	${CC} ${CFLAGS} -c $< -o $@
 
 clean:

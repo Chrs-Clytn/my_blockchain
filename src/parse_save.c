@@ -87,7 +87,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     string_array *input_arr = my_split(input, " ");
 
     // USE SWITCH CASE?
-    // We should also add some security in here incase block or node is input, but wrong number of arguments
+    // We should also add some security in here incase wrong number of arguments
 
     // go through string arr, fill command struct according to input
     for (int i = 0; i < input_arr->size - 1; i++)                       

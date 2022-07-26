@@ -2,8 +2,6 @@
 #include "string_mgmt.h"
 #include "parse_save.h"
 
-// replace lib functions with self-made functions; these are either in helpers.c (include helpers.h if necessary) or string_mgmt.c
-
 node_t *append_node(node_t *node_head, int n_id) // this appends to the node struct, takes the node_head and node id.
 {
     if (node_head == NULL) // if node_head is empty, fill and return node_head
@@ -31,6 +29,7 @@ block_t *append_block(block_t *block_head, char *b_id) // this appends to the bl
     block_t *current = block_head;
     if (block_head == NULL) // if blockhead is empty, fill and return blockhead
     {
+        // printf("blockhead is null 34, block id = %s\n", b_id);
         block_t *block_head = malloc(sizeof(block_t));
         block_head->bId = b_id;
         block_head->next = NULL;
@@ -46,8 +45,46 @@ block_t *append_block(block_t *block_head, char *b_id) // this appends to the bl
     return block_head;
 }
 
-// once this is working can then work on remove blocks
-// once remove blocks is working, i can work on sync function
+block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove blocks, will require some testing
+{
+        block_t *temp;
+        block_t *current = block_head;
+        while (current != NULL)
+        {
+            if (my_strcmp(block_head->bId, b_id) == 0) // removes the first block
+            {
+                temp = block_head;
+                block_head = block_head->next;
+                temp->bId = NULL;
+                temp->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else if (((my_strcmp(current->next->bId, b_id)) == 0) && current->next->next != NULL) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
+            {
+                temp = current->next;
+                current->next = current->next->next;
+                temp->bId = NULL;
+                temp->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else if (my_strcmp(current->bId, b_id) == 0 && current->next->next == NULL)
+            {
+                temp = current->next;
+                temp->bId = NULL;
+                current->next = NULL;
+                free(temp);
+                return block_head;
+            }
+            else
+                break;
+            current = current->next;
+        }
+    return block_head;
+}
+
+// NEED TO SORT OUT REMOVE FUNCTION FOR IF THERE ARE BLOCKS CURRENTLY STORED
 
 node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
 {
@@ -59,6 +96,19 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             temp = node_head;
             node_head = node_head->next;
             temp->next = NULL;
+            if(temp->block_head != NULL) // if blockhead is present
+            {
+                printf("we get here\n");
+                while(temp->block_head != NULL) // loop through the blockhead list
+                {
+                    printf("and here?\n");
+                    block_t *prev;// create some temp block lists
+                    prev = temp->block_head; // assign them to my blockhead
+                    prev = NULL;
+                    free(prev);
+                    temp->block_head = temp->block_head->next;
+                }
+            }
             free(temp);
             return node_head;
         }
@@ -67,6 +117,19 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             temp = current->next;
             current->next = current->next->next;
             temp->next = NULL;
+            if(temp->block_head != NULL) // if blockhead is present
+            {
+                printf("we get here\n");
+                while(temp->block_head != NULL) // loop through the blockhead list
+                {
+                    printf("and here?\n");
+                    block_t *prev;// create some temp block lists
+                    prev = temp->block_head; // assign them to my blockhead
+                    prev = NULL;
+                    free(prev);
+                    temp->block_head = temp->block_head->next;
+                }
+            }
             free(temp);
             return node_head;
         }
@@ -74,47 +137,24 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
         {
             temp = current->next;
             current->next = NULL;
+            if(temp->block_head != NULL) // if blockhead is present
+            {
+                printf("we get here\n");
+                while(temp->block_head != NULL) // loop through the blockhead list
+                {
+                    printf("and here?\n");
+                    block_t *prev;// create some temp block lists
+                    prev = temp->block_head; // assign them to my blockhead
+                    prev = NULL;
+                    free(prev);
+                    temp->block_head = temp->block_head->next;
+                }
+            }
             free(temp);
             return node_head;
         }
     }
     return node_head;
-}
-
-block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove blocks, will require some testing
-{
-        block_t *temp;
-        block_t *current = block_head;
-        while (current != NULL)
-        {
-            if (my_strcmp(block_head->bId, b_id) == 0) // removes the first block
-            {
-                temp = block_head;
-                block_head = block_head->next;
-                temp->next = NULL;
-                free(temp);
-                return block_head;
-            }
-            else if (((my_strcmp(current->next->bId, b_id)) == 0) && current->next->next != NULL) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
-            {
-                temp = current->next;
-                current->next = current->next->next;
-                temp->next = NULL;
-                free(temp);
-                return block_head;
-            }
-            else if (my_strcmp(current->bId, b_id) == 0 && current->next->next == NULL)
-            {
-                temp = current->next;
-                current->next = NULL;
-                free(temp);
-                return block_head;
-            }
-            else
-                break;
-            current = current->next;
-        }
-    return block_head;
 }
 
 node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
@@ -152,143 +192,11 @@ node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
     return node_head;
 }
 
-node_t *action_node(command_t *command, chain_t *chain)
-{
-    node_t *current = chain->head;
-    if ((command->add == true)) // add node
-    {
-        if (chain->head == NULL)
-        {
-            chain->head = append_node(chain->head, command->cmd_node_id);
-            chain->nodes += 1;
-            //printf("head node id = %d\n", chain->head->nId);
-            return chain->head;
-        }
-        else
-        {
-            while (current != NULL) // loop through nodes
-            {
-                if (current->nId == command->cmd_node_id) // compare the node ids for a match
-                    printf("%s", ERR_2);
-                else if (current->next == NULL) // else if next is NULL, no more nodes to check so append a new node.
-                {
-                    chain->head = append_node(chain->head, command->cmd_node_id); // give head (lol), rather than current as otherwise we lose our heads (lol)
-                    chain->nodes += 1;
-                    //chain->synced = false;
-                    return chain->head;
-                }
-                current = current->next;
-            }
-        }
-    }
-    if ((command->rm == true)) // remove node
-    {
-        if (command->all == true)
-        {
-            while (current != NULL) // loop through nodes and remove based on id, setting id to current nid
-            {
-                node_t *next = current->next; // set temp to current->next to save
-                int all_id = current->nId; // set al_id to current node id
-                remove_nodes(current, all_id); 
-                current = next;
-            }
-            chain->head = NULL;
-        }
-        else
-            chain->head = remove_nodes(current, command->cmd_node_id);
-    }
-    return chain->head;
-}
-
-node_t *action_block(command_t *command, chain_t *chain)
-{
-    node_t *currNode = chain->head;
-    if ((command->add == true)) // add block
-    {
-        if (chain->head == NULL)
-            printf("%s\n", ERR_4);
-        while (currNode != NULL) // loop through nodes
-        {
-            if (command->all == true) // if * is called
-            {
-                while (currNode != NULL) // loop through nodes
-                {
-                    currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
-                    currNode = currNode->next;
-                }
-                return chain->head;
-            }
-            if (currNode->nId == command->cmd_node_id) // compare node ids
-            {
-                currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
-                return chain->head;
-            }
-            else if (currNode->next == NULL)
-                printf("%s\n", ERR_4);
-            // should also add something more specific to counter whether block also already exists.
-            currNode = currNode->next;
-        }
-    }
-    if((command->rm == true)) // remove block
-    {
-        while(currNode != NULL) // loop through nodes
-        {
-            block_t *currBlock = currNode->block_head;
-            remove_blocks(currBlock, command->cmd_block_id);
-            currNode = currNode->next;
-        }
-     }
-    return chain->head;
-}
-
-chain_t *take_action(command_t *command, chain_t *chain)
-{
-    if (command->node == true && command->block == false) // we know the node is being affected
-        chain->head = action_node(command, chain);
-    // printf("node id in take action = %d\n", chain->head->nId);
-    if (command->block == true) // we know the block is being affected
-    {
-        chain->head = action_block(command, chain);
-        //printf("240, block take action = %s\n", chain->head->block_head->bId);
-    }
-    if (command->ls == true) // ls
-    {
-        if (chain->nodes <= 0 || chain->head == NULL)
-        {
-            printf("%s", ERR_4);
-            return chain;
-        }
-        if (command->ls_blocks == true)
-            listPrinter(chain->head, "-l");
-        else
-            listPrinter(chain->head, "no long");
-    }
-    return chain;
-}
-
-// Need to add a sync function
-// loop through nodes and find node with most blocks,
-// ccopy blocks from that node to all other nodes
-
-// void sorter(node_t *node_head, int n_id, char *b_id) // sorts through the nodes to know where to append the blocks
+// void save_blockchain(chain_t *chain)
 // {
-//     node_t *current = node_head;
-//     char *comp = my_itoa(n_id);
-//     if (my_strcmp(comp, "*")) // if node id == * append block to all nodes
-//     {
-//         while (current != NULL) // loop through nodes
-//         {
-//             append_block(current->block_head, b_id);
-//             current = node_head->next;
-//         }
-//     }
-//     else
-//     {
-//         while (current->next != NULL)
-//         {
-//             if (current->nId == n_id) // if node id matches the input to the function then we continue
-//                 append_block(current->block_head, b_id);
-//             current = node_head->next;
-//         }
-//     }
+//     FILE * filePointer;
+
+//     filePointer = fopen("saved_chain", "w+");
+
+
 // }
