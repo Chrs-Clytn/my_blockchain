@@ -29,7 +29,6 @@ block_t *append_block(block_t *block_head, char *b_id) // this appends to the bl
     block_t *current = block_head;
     if (block_head == NULL) // if blockhead is empty, fill and return blockhead
     {
-        // printf("blockhead is null 34, block id = %s\n", b_id);
         block_t *block_head = malloc(sizeof(block_t));
         block_head->bId = b_id;
         block_head->next = NULL;
@@ -84,28 +83,20 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
     return block_head;
 }
 
-// NEED TO SORT OUT REMOVE FUNCTION FOR IF THERE ARE BLOCKS CURRENTLY STORED
-
 node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
 {
     node_t *current = node_head, *temp;
-    printf("remove node function\n");
     while (current != NULL)
     {
-        printf("95\n");
         if(node_head->nId == n_id) // removes the first node bu pointing at the next and free
         {
-            printf("98\n");
             temp = node_head;
             node_head = node_head->next;
             temp->next = NULL;
-            printf("102\n");
             if(temp->block_head != NULL) // if blockhead is present
             {
-                printf("105\n");
                 while(temp->block_head != NULL) // loop through the blockhead list
                 {
-                    printf("108\n");
                     block_t *prev;// create some temp block lists
                     prev = temp->block_head; // assign them to my blockhead
                     prev = NULL;
@@ -118,40 +109,16 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
         }
         else if (current->next->nId == n_id) // checks if the next node id is what we need, if it is set head to prev, next to temp, current to next-next and then set temp nxt to NULL and free temp. Also will need testing
         {
-            printf("121\n");
             temp = current->next;
             if (current->next->next != NULL)
                 current->next = current->next->next;
             else
                 current->next = NULL;
             temp->next = NULL;
-            printf("125\n");
             if(temp->block_head != NULL) // if blockhead is present
             {
-                printf("128\n");
                 while(temp->block_head != NULL) // loop through the blockhead list
                 {
-                    printf("131?\n");
-                    block_t *prev;// create some temp block lists
-                    prev = temp->block_head; // assign them to my blockhead
-                    prev = NULL;
-                    free(prev);
-                    temp->block_head = temp->block_head->next;
-                }
-            }
-            free(temp);
-            return node_head;
-        }
-        else if(current->next->nId == n_id && current->next->next == NULL) // removes te last node by setting to temp, pointing to null and free
-        {
-            printf("144\n");
-            temp = current->next;
-            if(temp->block_head != NULL) // if blockhead is present
-            {
-                printf("149\n");
-                while(temp->block_head != NULL) // loop through the blockhead list
-                {
-                    printf("152?\n");
                     block_t *prev;// create some temp block lists
                     prev = temp->block_head; // assign them to my blockhead
                     prev = NULL;
