@@ -37,7 +37,7 @@ chain_t *open_chain(char *filename);
 char *get_input();
 command_t *parse_input(char *input);
 char *change_prompt(chain_t *chain);
-void save_blockchain();
+void save_blockchain(chain_t *chain);
 chain_t *take_action(command_t *command, chain_t *chain);
 
 #endif

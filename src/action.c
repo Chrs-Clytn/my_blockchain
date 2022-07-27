@@ -157,7 +157,7 @@ void dup_block(node_t *node) // function to delete duplicate blocks from each of
     while(noder != NULL) // loops through the each of the nodes
     {
         block_t *b_head = noder->block_head; // deletes duplicate blocks from the blockhead
-        listPrinter(noder, "-l");
+        // listPrinter(noder, "-l");
         if(b_head != NULL)
             delete_duplicates(b_head);
         //printf("144 bid = %s\n", b_head->bId);

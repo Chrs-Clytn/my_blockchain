@@ -89,19 +89,23 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
 node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes based on node id.
 {
     node_t *current = node_head, *temp;
+    printf("remove node function\n");
     while (current != NULL)
     {
+        printf("95\n");
         if(node_head->nId == n_id) // removes the first node bu pointing at the next and free
         {
+            printf("98\n");
             temp = node_head;
             node_head = node_head->next;
             temp->next = NULL;
+            printf("102\n");
             if(temp->block_head != NULL) // if blockhead is present
             {
-                printf("we get here\n");
+                printf("105\n");
                 while(temp->block_head != NULL) // loop through the blockhead list
                 {
-                    printf("and here?\n");
+                    printf("108\n");
                     block_t *prev;// create some temp block lists
                     prev = temp->block_head; // assign them to my blockhead
                     prev = NULL;
@@ -112,17 +116,22 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             free(temp);
             return node_head;
         }
-        if (current->next->nId == n_id && current->next->next != NULL) // checks if the next node id is what we need, if it is set head to prev, next to temp, current to next-next and then set temp nxt to NULL and free temp. Also will need testing
+        else if (current->next->nId == n_id) // checks if the next node id is what we need, if it is set head to prev, next to temp, current to next-next and then set temp nxt to NULL and free temp. Also will need testing
         {
+            printf("121\n");
             temp = current->next;
-            current->next = current->next->next;
+            if (current->next->next != NULL)
+                current->next = current->next->next;
+            else
+                current->next = NULL;
             temp->next = NULL;
+            printf("125\n");
             if(temp->block_head != NULL) // if blockhead is present
             {
-                printf("we get here\n");
+                printf("128\n");
                 while(temp->block_head != NULL) // loop through the blockhead list
                 {
-                    printf("and here?\n");
+                    printf("131?\n");
                     block_t *prev;// create some temp block lists
                     prev = temp->block_head; // assign them to my blockhead
                     prev = NULL;
@@ -133,16 +142,16 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             free(temp);
             return node_head;
         }
-        if(current->next->nId == n_id && current->next->next == NULL) // removes te last node by setting to temp, pointing to null and free
+        else if(current->next->nId == n_id && current->next->next == NULL) // removes te last node by setting to temp, pointing to null and free
         {
+            printf("144\n");
             temp = current->next;
-            current->next = NULL;
             if(temp->block_head != NULL) // if blockhead is present
             {
-                printf("we get here\n");
+                printf("149\n");
                 while(temp->block_head != NULL) // loop through the blockhead list
                 {
-                    printf("and here?\n");
+                    printf("152?\n");
                     block_t *prev;// create some temp block lists
                     prev = temp->block_head; // assign them to my blockhead
                     prev = NULL;
@@ -153,6 +162,7 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
             free(temp);
             return node_head;
         }
+        current = current->next;
     }
     return node_head;
 }
@@ -191,12 +201,3 @@ node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
         }
     return node_head;
 }
-
-// void save_blockchain(chain_t *chain)
-// {
-//     FILE * filePointer;
-
-//     filePointer = fopen("saved_chain", "w+");
-
-
-// }

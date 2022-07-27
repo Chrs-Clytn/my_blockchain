@@ -109,6 +109,8 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
 
         if (input_arr->size > 3 && my_strcmp("node", input_arr->array[1]) == 0 && (my_strcmp("add", input_arr->array[0])) == 0)
             command->cmd_node_id = my_atoi(input_arr->array[2]);
+        if (input_arr->size > 3 && my_strcmp("node", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0)
+            command->cmd_node_id = my_atoi(input_arr->array[2]);
         if (input_arr->size > 3 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("add", input_arr->array[0])) == 0)
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
@@ -156,7 +158,53 @@ char *change_prompt(chain_t *chain)
     return prompt;
 }
 
-void save_blockchain()
-{
+// create a save file
 
+void save_blockchain(chain_t *chain)
+{
+    int fd = open("blockchain", O_WRONLY | O_CREAT, 0644);
+    node_t *current_node = chain->head;
+    while(current_node != NULL)
+    {
+        printf("Current node id = %d\n", current_node->nId);
+        block_t *current_block = current_node->block_head;
+        char* node_id = my_itoa(current_node->nId);
+        if(current_node->nId && (current_node->next != NULL))
+        {
+            printf("first if, 172\n");
+            write(fd, node_id, strlen(node_id));
+            write(fd, " : ", 3);
+        }
+        else if(current_node->next == NULL && (current_block->bId == NULL))
+        {
+            printf("178, node id = %d, bid = NULL\n", current_node->nId);
+            write(fd, node_id, strlen(node_id));
+            write(fd, "\0", 1);
+            break;
+        }
+        else if(current_node->next == NULL && (current_block->bId != NULL))
+        {
+            write(fd, node_id, strlen(node_id));
+            write(fd, " : ", 3);
+        }
+        while(current_block != NULL)
+        {
+            printf("block id = %s\n", current_block->bId);
+            if(current_block->bId && (current_block->next != NULL))
+            {
+                printf("188 bid present, next != NULL");
+                write(fd, current_block->bId, strlen(current_block->bId));
+                write(fd, ", ", 2);
+            }
+            else if(current_block->next == NULL)
+            {
+                printf("next block = NULL\n");
+                write(fd, current_block->bId, strlen(current_block->bId));
+                write(fd, "\n", 1);
+            }
+            current_block = current_block->next;
+        }
+       current_node = current_node->next;
+    }
+    close(fd);
 }
