@@ -147,7 +147,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
             command->cmd_block_id = input_arr->array[2];
             command->cmd_node_id = my_atoi(input_arr->array[3]);
         }
-        if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0)
+        if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0) // This particularly is throwing issues
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
             command->cmd_block_id = input_arr->array[2];
