@@ -13,34 +13,35 @@ chain_t *open_chain(char *filename)
         chain = NULL;
         return chain;
     }
-    // char buffer[MAX_INPUT_SIZE];
-    // int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
-    // //printf("readbytes = %d\n", readbytes);
-    // buffer[strlen(buffer) - 1] = '\0';
-    // printf("%s strlen buffer = %ld\n", buffer, strlen(buffer));
-    // for(int i = 0; i <= readbytes; i++)
-    // {
-    //     if(i == 0 || (buffer[i - 2] == '\n'))
-    //     {
-    //         char s = buffer[i];
-    //         //printf("s = %d\n", s);
-    //         int node = s - 48;
-    //         chain->head = append_node(chain->head, node);
-    //     }
-    //     else if((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
-    //     {
-    //         char *block_id_convert = NULL;
-    //         int k = 0, j = i + 1;
-    //         while(buffer[j] != ',' || buffer[j] != '\n')
-    //         {
-    //             block_id_convert[k] = buffer[j];
-    //             k++;
-    //             j++;
-    //         }
-    //         append_block(chain->head->block_head, block_id_convert);
-    //         //chain->head->block_head = chain->head->block_head->next;
-    //     }
-    // }
+    char buffer[MAX_INPUT_SIZE];
+    int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
+    //printf("readbytes = %d\n", readbytes);
+    buffer[strlen(buffer) - 1] = '\0';
+    printf("%s strlen buffer = %ld\n", buffer, strlen(buffer));
+    for(int i = 0; i <= readbytes; i++)
+    {
+        if(i == 0 || (buffer[i - 2] == '\n'))
+        {
+            char s = buffer[i];
+            printf("s = %d\n", s);
+            int node = s - 48;
+            debug("%d", node);
+            chain->head = append_node(chain->head, node);
+        }
+        else if((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
+        {
+            char *block_id_convert = NULL;
+            int k = 0, j = i + 1;
+            while(buffer[j] != ',' || buffer[j] != '\n')
+            {
+                block_id_convert[k] = buffer[j];
+                k++;
+                j++;
+            }
+            append_block(chain->head->block_head, block_id_convert);
+            //chain->head->block_head = chain->head->block_head->next;
+        }
+    }
     // read file and get info for synced, nodes and head
     // if it's no valid chain file
     // {
@@ -141,11 +142,12 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
             command->cmd_node_id = my_atoi(input_arr->array[2]);
         if (input_arr->size > 3 && my_strcmp("node", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0)
             command->cmd_node_id = my_atoi(input_arr->array[2]);
-        if (input_arr->size > 3 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("add", input_arr->array[0])) == 0)
+        if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("add", input_arr->array[0])) == 0)
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
             command->cmd_block_id = input_arr->array[2];
-            command->cmd_node_id = my_atoi(input_arr->array[3]);
+            if(input_arr->size > 4)
+                command->cmd_node_id = my_atoi(input_arr->array[3]);
         }
         if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0) // This particularly is throwing issues
         {

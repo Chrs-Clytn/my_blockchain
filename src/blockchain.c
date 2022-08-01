@@ -60,13 +60,21 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
                 temp = NULL;
                 return block_head;
             }
-            else if ((my_strcmp(current->next->bId, b_id)) == 0) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
+            else if (((my_strcmp(current->next->bId, b_id)) == 0) && current->next->next != NULL) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
             {
                 temp = current->next;
-                if (current->next->next != NULL)
-                    current->next = current->next->next;
+                current->next = current->next->next;
                 temp->bId = NULL;
                 temp->next = NULL;
+                free(temp);
+                temp = NULL;
+                return block_head;
+            }
+            else if (my_strcmp(current->bId, b_id) == 0 && current->next->next == NULL)
+            {
+                temp = current->next;
+                temp->bId = NULL;
+                current->next = NULL;
                 free(temp);
                 temp = NULL;
                 return block_head;
@@ -100,7 +108,6 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
                 }
             }
             free(temp);
-            temp = NULL;
             return node_head;
         }
         else if (current->next->nId == n_id) // checks if the next node id is what we need, if it is set head to prev, next to temp, current to next-next and then set temp nxt to NULL and free temp. Also will need testing
@@ -123,7 +130,6 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
                 }
             }
             free(temp);
-            temp = NULL;
             return node_head;
         }
         current = current->next;
@@ -134,6 +140,7 @@ node_t *remove_nodes(node_t *node_head, int n_id) // function to remove nodes ba
 node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
 {
     node_t *current = node_head;
+    //printf("node head list printer 118 %d\n", node_head->nId);
     if (node_head == NULL)
     {
         printf("%s\n", ERR_4);
@@ -143,12 +150,12 @@ node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
     {
         while (current != NULL)
         {
-            if(current->nId)
-                printf("%d : ", current->nId);
+            printf("%d : ", current->nId);
             block_t *currBlock = current->block_head;
             while (currBlock != NULL)
             {
-                printf("%s, ", currBlock->bId);
+                if(currBlock->bId)
+                    printf("%s, ", currBlock->bId);
                 currBlock = currBlock->next;
             }
             printf("\n");
