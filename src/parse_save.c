@@ -23,7 +23,7 @@ chain_t *open_chain(char *filename)
     return chain;
 }
 
-
+// use my_readline on stdin?
 char *get_input()
 {
     // set up strings

@@ -18,6 +18,7 @@ typedef struct prompt_s {
 } prompt_t;
 #endif
 
+// add better error handling? see Workshop 7/19
 #define ERR_1 "No more resources available on the computer.\n"
 #define ERR_2 "This node already exists.\n"
 #define ERR_3 "This block already exists.\n"

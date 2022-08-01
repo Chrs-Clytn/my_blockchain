@@ -38,7 +38,7 @@ int main(int ac, char **av)
         // exit condition
         if (my_strcmp(input, "quit") == 0)
         {
-            save_blockchain();
+            save_blockchain();  // just simple txtfile with some lines: synced // node block block "1 5 12" // node block block etc.
             break;
         }
 
