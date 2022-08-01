@@ -60,7 +60,7 @@ node_t *action_node(command_t *command, chain_t *chain)
 node_t *action_block(command_t *command, chain_t *chain)
 {
     node_t *currNode = chain->head;
-    if ((command->add == true)) // add block
+    if (command->add == true) // add block
     {
         if (chain->head == NULL)
             printf("%s\n", ERR_4);
@@ -87,7 +87,7 @@ node_t *action_block(command_t *command, chain_t *chain)
             currNode = currNode->next;
         }
     }
-    if((command->rm == true)) // remove block
+    if(command->rm == true) // remove block
     {
         while(currNode != NULL) // loop through nodes
         {
