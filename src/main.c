@@ -91,6 +91,7 @@ int main(int ac, char **av)
 // this should consist of a loop to read the prompt
 // should print out the prompt each loop
 // print out either "s" or "-" whether synchronised or not. and the number of nodes surrounded by brackets with > e.g. [s1]>
+// mostly done, might want to refine s when adding nodes
 
 // create function to append to the node struct
 // take node id from prompt and create a node with that id
@@ -117,7 +118,17 @@ int main(int ac, char **av)
 // DONE
 
 // create a sync function to copy all blocks to each node
-// iterate through nodes and find one with the most blocks
+// iterate through nodes and blocks, store all block ids in a list
 // copy those blocks to each other node
+// remove duplicates from all block lists
+// mostly done, still some edge cases to work out
 
 // add quit to the initial loop inside the main
+
+// create save function,
+// make a file and store Node id : block id, block id etc. on each line
+// mostly done, getting some memory warnings when quitting, but file is created
+
+// create open function
+// if file is added as argument, 
+// open file and store info into current lists

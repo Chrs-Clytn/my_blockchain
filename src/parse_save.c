@@ -3,6 +3,8 @@
 chain_t *open_chain(char *filename)
 {
     chain_t *chain = malloc(sizeof(chain_t));
+    chain->head = NULL;
+    //node_t *node_header = chain->head;
 
     int fd = open(filename, O_RDONLY);
     if (fd == -1)
@@ -11,6 +13,34 @@ chain_t *open_chain(char *filename)
         chain = NULL;
         return chain;
     }
+    // char buffer[MAX_INPUT_SIZE];
+    // int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
+    // //printf("readbytes = %d\n", readbytes);
+    // buffer[strlen(buffer) - 1] = '\0';
+    // printf("%s strlen buffer = %ld\n", buffer, strlen(buffer));
+    // for(int i = 0; i <= readbytes; i++)
+    // {
+    //     if(i == 0 || (buffer[i - 2] == '\n'))
+    //     {
+    //         char s = buffer[i];
+    //         //printf("s = %d\n", s);
+    //         int node = s - 48;
+    //         chain->head = append_node(chain->head, node);
+    //     }
+    //     else if((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
+    //     {
+    //         char *block_id_convert = NULL;
+    //         int k = 0, j = i + 1;
+    //         while(buffer[j] != ',' || buffer[j] != '\n')
+    //         {
+    //             block_id_convert[k] = buffer[j];
+    //             k++;
+    //             j++;
+    //         }
+    //         append_block(chain->head->block_head, block_id_convert);
+    //         //chain->head->block_head = chain->head->block_head->next;
+    //     }
+    // }
     // read file and get info for synced, nodes and head
     // if it's no valid chain file
     // {
@@ -166,18 +196,18 @@ void save_blockchain(chain_t *chain)
     node_t *current_node = chain->head;
     while(current_node != NULL)
     {
-        printf("Current node id = %d\n", current_node->nId);
+        //printf("Current node id = %d\n", current_node->nId);
         block_t *current_block = current_node->block_head;
         char* node_id = my_itoa(current_node->nId);
         if(current_node->nId && (current_node->next != NULL))
         {
-            printf("first if, 172\n");
+            //printf("first if, 172\n");
             write(fd, node_id, strlen(node_id));
-            write(fd, " : ", 3);
+            write(fd, ":", 1);
         }
         else if(current_node->next == NULL && (current_block->bId == NULL))
         {
-            printf("178, node id = %d, bid = NULL\n", current_node->nId);
+            //printf("178, node id = %d, bid = NULL\n", current_node->nId);
             write(fd, node_id, strlen(node_id));
             write(fd, "\0", 1);
             break;
@@ -185,20 +215,20 @@ void save_blockchain(chain_t *chain)
         else if(current_node->next == NULL && (current_block->bId != NULL))
         {
             write(fd, node_id, strlen(node_id));
-            write(fd, " : ", 3);
+            write(fd, ":", 1);
         }
         while(current_block != NULL)
         {
-            printf("block id = %s\n", current_block->bId);
+            //printf("block id = %s\n", current_block->bId);
             if(current_block->bId && (current_block->next != NULL))
             {
-                printf("188 bid present, next != NULL");
+                //printf("188 bid present, next != NULL");
                 write(fd, current_block->bId, strlen(current_block->bId));
-                write(fd, ", ", 2);
+                write(fd, ",", 1);
             }
             else if(current_block->next == NULL)
             {
-                printf("next block = NULL\n");
+                //printf("next block = NULL\n");
                 write(fd, current_block->bId, strlen(current_block->bId));
                 write(fd, "\n", 1);
             }

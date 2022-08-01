@@ -6,7 +6,7 @@
 node_t *action_node(command_t *command, chain_t *chain)
 {
     node_t *current = chain->head;
-    if ((command->add == true)) // add node
+    if (command->add == true) // add node
     {
         if (chain->head == NULL)
         {
@@ -34,7 +34,7 @@ node_t *action_node(command_t *command, chain_t *chain)
             }
         }
     }
-    if ((command->rm == true)) // remove node
+    if (command->rm == true) // remove node
     {
         if (command->all == true)
         {
@@ -99,71 +99,16 @@ node_t *action_block(command_t *command, chain_t *chain)
     return chain->head;
 }
 
-void delete_duplicates(block_t *my_list) // deletes duplicates from block list
+int block_check(block_t *blockHead, char *list_bid)
 {
-    block_t *a_list, *b_list, *last, *temp; // create some extras to assist with loops
-    a_list = b_list = last = my_list; // assign to my list
-    // printf("b_list id = %s\n", b_list->bId);
-    b_list = b_list->next; // b_list equals next
-    while (a_list != NULL)
+    block_t *block_head = blockHead;
+    while (block_head != NULL)
     {
-       // printf("110 alist bid = %s\n", a_list->bId);
-        while (b_list != NULL && b_list->bId != a_list->bId)
-        {
-            //printf("113 blist bid = %s\n", b_list->bId);
-            last = b_list; // loops through to assign last block to last
-            b_list = b_list->next;
-        }
-        if (b_list == NULL) // if b list is null a_list is next
-        {
-            //printf("line 119\n");
-            a_list = a_list->next;
-            if (a_list != NULL && a_list->next != NULL)
-            {
-                //printf("alist != NULL\n");
-                //printf(" 124 alist bid = %s\n", a_list->bId);
-                //printf("alist next = %s\n", a_list->next->bId);
-                b_list = a_list->next; // if a list isnt Null b_list is the next a list
-                //printf("another thing\n");
-            }
-            else
-                return;
-        }
-        else if (b_list->bId == a_list->bId) // otheriwse if bids from a and b list match
-        {
-            //printf("last bid = %s\n", last->bId);
-            //printf("127 blist b id = %s\n", b_list->bId);
-            last->next = b_list->next; // last next pointer is blist next which we then free
-            temp = b_list;
-            //printf("temp bid = %s\n", temp->bId);
-           // printf("address to delete %p\n ", &(temp->bId));
-            b_list = b_list->next;
-            //printf("139\n");
-            free(temp);
-            temp = NULL;
-            //printf("142\n");
-        }
+        if (my_strcmp(block_head->bId, list_bid) == 0)
+            return 1;
+        block_head = block_head->next;
     }
-    //printf("exit\n");
-    // free(a_list);
-    // free(b_list);
-    // free(last);
-}
-
-void dup_block(node_t *node) // function to delete duplicate blocks from each of the nodes
-{
-    //printf("135\n");
-    node_t *noder = node;
-    while(noder != NULL) // loops through the each of the nodes
-    {
-        block_t *b_head = noder->block_head; // deletes duplicate blocks from the blockhead
-        // listPrinter(noder, "-l");
-        if(b_head != NULL)
-            delete_duplicates(b_head);
-        //printf("144 bid = %s\n", b_head->bId);
-        noder = noder->next;
-    }
-    //printf("143\n");
+    return 0;
 }
 
 void block_adder(block_t *list, node_t *node) // function to add blocks from my list into the block lists in each node
@@ -178,15 +123,17 @@ void block_adder(block_t *list, node_t *node) // function to add blocks from my 
         {
             if(c_node->block_head == NULL)
                 c_node->block_head = append_block(c_node->block_head, lister->bId);
-            block_t *blocker = c_node->block_head;
-            append_block(blocker, lister->bId); // append bid from list to block struct within each node
-            c_node = c_node->next;
+            else
+            {
+                block_t *blocker = c_node->block_head;
+                int check_res = block_check(blocker, lister->bId);
+                if(check_res == 0)
+                    append_block(blocker, lister->bId); // append bid from list to block struct within each node
+                c_node = c_node->next;
+            }
         }
         lister = lister->next;
     }
-    //printf("162\n");
-    dup_block(node); // delete duplicate blocks from each node
-    //printf("something\n");
 }
 
 chain_t *kitchen_sync(chain_t *chain) // sync function
@@ -208,6 +155,7 @@ chain_t *kitchen_sync(chain_t *chain) // sync function
     //delete_duplicates(list); // deletes duplicates from my new list of all block ids
     //printf("182\n");
     block_adder(list, chain->head); // add bid from block list to each node individually
+    //block_check(list, chain);
 
     return chain;
 }
