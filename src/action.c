@@ -12,7 +12,7 @@ node_t *action_node(command_t *command, chain_t *chain)
         {
             chain->head = append_node(chain->head, command->cmd_node_id);
             chain->nodes += 1;
-            //printf("head node id = %d\n", chain->head->nId);
+            // printf("head node id = %d\n", chain->head->nId);
             return chain->head;
         }
         else
@@ -41,8 +41,8 @@ node_t *action_node(command_t *command, chain_t *chain)
             while (current != NULL) // loop through nodes and remove based on id, setting id to current nid
             {
                 node_t *next = current->next; // set temp to current->next to save
-                int all_id = current->nId; // set al_id to current node id
-                remove_nodes(current, all_id); 
+                int all_id = current->nId;    // set al_id to current node id
+                remove_nodes(current, all_id);
                 current = next;
             }
             chain->nodes = 0;
@@ -60,7 +60,7 @@ node_t *action_node(command_t *command, chain_t *chain)
 node_t *action_block(command_t *command, chain_t *chain)
 {
     node_t *currNode = chain->head;
-    if ((command->add == true)) // add block
+    if (command->add == true) // add block
     {
         if (chain->head == NULL)
             printf("%s\n", ERR_4);
@@ -87,15 +87,15 @@ node_t *action_block(command_t *command, chain_t *chain)
             currNode = currNode->next;
         }
     }
-    if((command->rm == true)) // remove block
+    if (command->rm == true) // remove block
     {
-        while(currNode != NULL) // loop through nodes
+        while (currNode != NULL) // loop through nodes
         {
             block_t *currBlock = currNode->block_head;
             remove_blocks(currBlock, command->cmd_block_id);
             currNode = currNode->next;
         }
-     }
+    }
     return chain->head;
 }
 
@@ -115,19 +115,19 @@ void block_adder(block_t *list, node_t *node) // function to add blocks from my 
 {
     node_t *noder = node;
     block_t *lister = list;
-    while(lister != NULL) // loop through the list of blocks to add first
+    while (lister != NULL) // loop through the list of blocks to add first
     {
         node_t *c_node = noder;
-        //printf("block lister is = %s\n", lister->bId);
-        while(c_node != NULL)
+        // printf("block lister is = %s\n", lister->bId);
+        while (c_node != NULL)
         {
-            if(c_node->block_head == NULL)
+            if (c_node->block_head == NULL)
                 c_node->block_head = append_block(c_node->block_head, lister->bId);
             else
             {
                 block_t *blocker = c_node->block_head;
                 int check_res = block_check(blocker, lister->bId);
-                if(check_res == 0)
+                if (check_res == 0)
                     append_block(blocker, lister->bId); // append bid from list to block struct within each node
                 c_node = c_node->next;
             }
@@ -143,19 +143,19 @@ chain_t *kitchen_sync(chain_t *chain) // sync function
     while (n_head != NULL) // loop through the nodes
     {
         block_t *b_head = n_head->block_head; // assign blockhead from each node within the loop
-        while (b_head != NULL) // loop through blockhead
+        while (b_head != NULL)                // loop through blockhead
         {
-            if(b_head->bId != NULL)
+            if (b_head->bId != NULL)
                 list = append_block(list, b_head->bId); // append each bid to my new list
             b_head = b_head->next;
         }
         n_head = n_head->next;
     }
-    //printf("180\n");
-    //delete_duplicates(list); // deletes duplicates from my new list of all block ids
-    //printf("182\n");
+    // printf("180\n");
+    // delete_duplicates(list); // deletes duplicates from my new list of all block ids
+    // printf("182\n");
     block_adder(list, chain->head); // add bid from block list to each node individually
-    //block_check(list, chain);
+    // block_check(list, chain);
 
     return chain;
 }
