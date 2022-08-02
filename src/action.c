@@ -64,8 +64,7 @@ node_t *action_block(command_t *command, chain_t *chain)
     if (command->add == true) // add block
     {
         if (chain->head == NULL)
-            printf("%s", ERR_4);
-
+            printf("%s\n", ERR_4);
         while (currNode != NULL) // loop through nodes
         {
             if (command->all == true) // if * is called
@@ -79,23 +78,26 @@ node_t *action_block(command_t *command, chain_t *chain)
             }
             if (currNode->nId == command->cmd_node_id) // compare node ids
             {
+                // debug("command add %d, nid %d", command->add, command->cmd_node_id);
                 currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
                 chain->synced = false;
                 return chain->head;
             }
             else if (currNode->next == NULL)
-                printf("%s", ERR_4);
+                printf("%s\n", ERR_4);
             // should also add something more specific to counter whether block also already exists.
             currNode = currNode->next;
         }
     }
-    if (command->rm == true) // remove block
+    else if(command->rm == true) // remove block
     {
-        while (currNode != NULL) // loop through nodes
+        node_t *new_node = chain->head;
+        while (new_node != NULL) // loop through nodes
         {
-            block_t *currBlock = currNode->block_head;
-            remove_blocks(currBlock, command->cmd_block_id);
-            currNode = currNode->next;
+            block_t *currBlock = new_node->block_head;
+            new_node->block_head = remove_blocks(currBlock, command->cmd_block_id);
+            debug("bid %s", new_node->block_head->bId);
+            new_node = new_node->next;
         }
     }
     return chain->head;
@@ -161,10 +163,11 @@ chain_t *take_action(command_t *command, chain_t *chain)
 {
     if (command->node == true && command->block == false) // we know the node is being affected
         chain->head = action_node(command, chain);
-
     if (command->block == true) // we know the block is being affected
+    {
         chain->head = action_block(command, chain);
-
+        debug("bid %s", chain->head->block_head->bId);
+    }
     if (command->ls == true) // ls
     {
         if (chain->nodes <= 0 || chain->head == NULL)

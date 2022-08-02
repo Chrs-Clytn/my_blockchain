@@ -54,27 +54,22 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
             {
                 temp = block_head;
                 block_head = block_head->next;
-                temp->bId = NULL;
+                //temp->bId = NULL;
                 temp->next = NULL;
                 free(temp);
                 temp = NULL;
+                debug("bid %s", block_head->bId);
                 return block_head;
             }
-            else if (((my_strcmp(current->next->bId, b_id)) == 0) && current->next->next != NULL) // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
+            else if (((my_strcmp(current->next->bId, b_id)) == 0))  // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
             {
                 temp = current->next;
-                current->next = current->next->next;
-                temp->bId = NULL;
+                if(current->next->next != NULL)
+                    current->next = current->next->next;
+                else
+                    current->next = NULL;
+                //temp->bId = NULL;
                 temp->next = NULL;
-                free(temp);
-                temp = NULL;
-                return block_head;
-            }
-            else if (my_strcmp(current->bId, b_id) == 0 && current->next->next == NULL)
-            {
-                temp = current->next;
-                temp->bId = NULL;
-                current->next = NULL;
                 free(temp);
                 temp = NULL;
                 return block_head;
@@ -154,7 +149,7 @@ node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
             block_t *currBlock = current->block_head;
             while (currBlock != NULL)
             {
-                if(currBlock->bId)      // SEGFAULT after removing first of two blocks in a node, then ls -l
+                if(currBlock->bId != NULL)      // SEGFAULT after removing first of two blocks in a node, then ls -l
                     printf("%s, ", currBlock->bId);
                 currBlock = currBlock->next;
             }
