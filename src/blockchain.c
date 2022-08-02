@@ -54,7 +54,7 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
             {
                 temp = block_head;
                 block_head = block_head->next;
-                //temp->bId = NULL;
+                temp->bId = NULL;
                 temp->next = NULL;
                 free(temp);
                 temp = NULL;
@@ -68,14 +68,12 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
                     current->next = current->next->next;
                 else
                     current->next = NULL;
-                //temp->bId = NULL;
+                temp->bId = NULL;
                 temp->next = NULL;
                 free(temp);
                 temp = NULL;
                 return block_head;
             }
-            else
-                break;
             current = current->next;
         }
     return block_head;

@@ -186,19 +186,11 @@ void save_blockchain(chain_t *chain)
     int fd = open("blockchain", O_WRONLY | O_CREAT, 0644);
 
     // synced or not?
-<<<<<<< HEAD
     if (chain->synced == true)
         write(fd, "s", 1);
     else
         write(fd, "-", 1);
     write(fd, "\n", 1);
-=======
-        if (chain->synced == true)
-            write(fd, "s", 1);
-        else
-            write(fd, "-", 1);
-        write(fd, "\n", 1);
->>>>>>> 2d34379ffbb1701f44f50fc32c9240d6ea64a086
 
     // move through chain and write info to file
     node_t *current_node = chain->head;
