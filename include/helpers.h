@@ -15,8 +15,13 @@ typedef struct s_string_array {
 } string_array;
 #endif
 
+#define MAX_SIZE 512
+#define READLINE_READ_SIZE 10
+char *STORAGE;
+
 int my_atoi(char *str);
 char* my_itoa(int num);
 string_array *my_split(char *str, char *sep);
+char *my_readline(int fd);
 
 #endif

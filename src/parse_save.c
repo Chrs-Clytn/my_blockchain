@@ -1,5 +1,7 @@
 #include "parse_save.h"
 
+static chain_t *fill_chain(chain_t *chain, char *line);
+
 chain_t *open_chain(char *filename)
 {
     chain_t *chain = malloc(sizeof(chain_t));
@@ -13,28 +15,46 @@ chain_t *open_chain(char *filename)
         chain = NULL;
         return chain;
     }
-    char buffer[MAX_INPUT_SIZE];
-    int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
-    // printf("readbytes = %d\n", readbytes);
-    buffer[strlen(buffer) - 1] = '\0';
-    printf("%s strlen buffer = %ld\n", buffer, strlen(buffer));
-    for (int i = 0; i <= readbytes; i++)
+
+    char *line = NULL;
+    while ((line = my_readline(fd)) != NULL)
     {
-        if (i == 0 || (buffer[i - 2] == '\n'))
+        printf("%s\n", line);
+        // convert line to chain info
+        // chain = fill_chain(chain, line);
+        free(line);
+    }
+
+    /* char buffer[MAX_INPUT_SIZE];
+    int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
+    debug("readbytes = %d", readbytes);
+
+    buffer[readbytes] = '\0';
+    debug("buff: %s", buffer); */
+
+    close(fd);
+    return chain;
+}
+
+static chain_t *fill_chain(chain_t *chain, char *line)
+{
+    for (int i = 0; line[i] != '\0'; i++)
+    {
+        if (i == 0 || (line[i - 2] == '\n'))
         {
-            char s = buffer[i];
+            char s = line[i];
             printf("s = %d\n", s);
             int node = s - 48;
             debug("%d", node);
             chain->head = append_node(chain->head, node);
         }
-        else if ((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
+        else if ((line[i - 1] == ':') || (line[i - 1] == ','))
         {
             char *block_id_convert = NULL;
             int k = 0, j = i + 1;
-            while (buffer[j] != ',' || buffer[j] != '\n')
+            while (line[j] != ',' || line[j] != '\n')
             {
-                block_id_convert[k] = buffer[j];
+                block_id_convert[k] = line[j];
                 k++;
                 j++;
             }
@@ -42,15 +62,6 @@ chain_t *open_chain(char *filename)
             // chain->head->block_head = chain->head->block_head->next;
         }
     }
-    // read file and get info for synced, nodes and head
-    // if it's no valid chain file
-    // {
-    //     printf("%s\n", ERR_8);
-    //     chain = NULL;
-    //     return chain;
-    // }
-
-    close(fd);
     return chain;
 }
 
@@ -174,17 +185,17 @@ void save_blockchain(chain_t *chain)
     // open file
     int fd = open("blockchain", O_WRONLY | O_CREAT, 0644);
 
-    // move through chain and write info to file
-    node_t *current_node = chain->head;
-    while (current_node != NULL)
-    {
-        // synced or not?
+    // synced or not?
         if (chain->synced == true)
             write(fd, "s", 1);
         else
             write(fd, "-", 1);
         write(fd, "\n", 1);
 
+    // move through chain and write info to file
+    node_t *current_node = chain->head;
+    while (current_node != NULL)
+    {
         // write node id of current node
         block_t *current_block = current_node->block_head;
         char *node_id = my_itoa(current_node->nId);

@@ -88,3 +88,15 @@ void my_putstr(char *string)
         string++;
     }
 }
+
+char *my_strchr(char *str, char c)
+{
+    while (*str)
+    {
+        if (*str == c)
+            return str;
+        else
+            str++;
+    }
+    return NULL;
+}
