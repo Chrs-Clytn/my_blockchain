@@ -12,7 +12,6 @@ node_t *action_node(command_t *command, chain_t *chain)
         {
             chain->head = append_node(chain->head, command->cmd_node_id);
             chain->nodes += 1;
-            // printf("head node id = %d\n", chain->head->nId);
             return chain->head;
         }
         else
@@ -78,7 +77,6 @@ node_t *action_block(command_t *command, chain_t *chain)
             }
             if (currNode->nId == command->cmd_node_id) // compare node ids
             {
-                // debug("command add %d, nid %d", command->add, command->cmd_node_id);
                 currNode->block_head = append_block(currNode->block_head, command->cmd_block_id); // append block to specific node
                 chain->synced = false;
                 return chain->head;
@@ -96,7 +94,6 @@ node_t *action_block(command_t *command, chain_t *chain)
         {
             block_t *currBlock = new_node->block_head;
             new_node->block_head = remove_blocks(currBlock, command->cmd_block_id);
-            debug("bid %s", new_node->block_head->bId);
             new_node = new_node->next;
         }
     }
@@ -122,7 +119,6 @@ void block_adder(block_t *list, node_t *node) // function to add blocks from my 
     while (lister != NULL) // loop through the list of blocks to add first
     {
         node_t *c_node = noder;
-        // printf("block lister is = %s\n", lister->bId);
         while (c_node != NULL)
         {
             if (c_node->block_head == NULL)
@@ -164,10 +160,7 @@ chain_t *take_action(command_t *command, chain_t *chain)
     if (command->node == true && command->block == false) // we know the node is being affected
         chain->head = action_node(command, chain);
     if (command->block == true) // we know the block is being affected
-    {
         chain->head = action_block(command, chain);
-        debug("bid %s", chain->head->block_head->bId);
-    }
     if (command->ls == true) // ls
     {
         if (chain->nodes <= 0 || chain->head == NULL)

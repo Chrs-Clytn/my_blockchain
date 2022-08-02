@@ -78,23 +78,6 @@ char *get_input(char *prompt_string)
     return input;
 }
 
-// char *get_input()
-// {
-//     // set up strings
-//     char *input = NULL;
-//     char buff[MAX_INPUT_SIZE];
-//     my_memset(buff, '\0', MAX_INPUT_SIZE - 1);
-
-//     // read input and close buffer
-//     int readBytes = 0;
-//     readBytes = read(0, buff, MAX_INPUT_SIZE - 1);
-//     buff[readBytes - 1] = '\0';
-
-//     // copy buffer for better handling & return
-//     input = my_strdup(buff);
-//     return input;
-// }
-
 command_t *parse_input(char *input) // all the functionality (append, remove, list, sync) comes in here!!
 {
     // create command struct and set all fields to 0
@@ -117,8 +100,6 @@ command_t *parse_input(char *input) // all the functionality (append, remove, li
     string_array *input_arr = my_split(input, " ");
 
     // USE SWITCH CASE?
-    // We should also add some security in here incase wrong number of arguments
-
     // go through string arr, fill command struct according to input
     for (int i = 0; i < input_arr->size - 1; i++)
     {
@@ -148,7 +129,7 @@ command_t *parse_input(char *input) // all the functionality (append, remove, li
             if (input_arr->size > 4)
                 command->cmd_node_id = my_atoi(input_arr->array[3]);
         }
-        if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0) // This particularly is throwing issues
+        if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0) 
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
             command->cmd_block_id = input_arr->array[2];
@@ -212,7 +193,7 @@ void save_blockchain(chain_t *chain)
             write(fd, node_id, my_strlen(node_id));
             write(fd, ":", 1);
         }
-        else if (current_node->next == NULL && (current_block->bId == NULL))  // SEGFAULT if only node is added without adding block & then save/quit
+        else if (current_node->next == NULL) // removed the bid check as was causing segfault
         {
             write(fd, node_id, my_strlen(node_id));
             write(fd, "\0", 1);
