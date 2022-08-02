@@ -2,6 +2,7 @@
 
 static char *reverse_string(char *word);
 static int find_str_num(char *str, char *sep);
+static void str_cut(char *str, char cut);
 
 int my_atoi(char *str)
 {
@@ -158,4 +159,67 @@ static int find_str_num(char *str, char *sep)
             strNum++;
     }
     return strNum;
+}
+
+char *my_readline(int fd)
+{
+    // guard against wrong use
+    if (fd < 0) return NULL;
+
+    // set up strings
+    char *line = malloc(sizeof(char) * MAX_SIZE);
+    my_memset(line, '\0', MAX_SIZE - 1);
+
+    char tmp[MAX_SIZE];
+    tmp[0] = '\0';
+
+    char buff[READLINE_READ_SIZE + 1]; 
+    
+    if (STORAGE && STORAGE[0] == '\n')
+    {
+        // skip the newline, then copy storage to line first
+        STORAGE++;
+        my_strcat(line, STORAGE);
+        // flush storage
+        my_memset(STORAGE, '\0', my_strlen(STORAGE));
+    }
+
+    int read_bytes;
+    while ((read_bytes = read(fd, buff, READLINE_READ_SIZE)) > 0)
+    {
+        if (read_bytes == -1) return NULL;
+        
+        buff[read_bytes] = '\0';
+        // check if newline is present and copy everything from newline to storage for later use
+        if (my_strchr(buff, '\n') != NULL)
+        {
+            char *rest = my_strchr(buff, '\n');
+            STORAGE = my_strdup(rest);
+            my_strcat(tmp, buff);
+            break;
+        }
+        // put everything read into tmp string
+        my_strcat(tmp, buff);
+    }
+    // cut temp string before newline, then append to line
+    str_cut(tmp, '\n');
+    my_strcat(line, tmp);
+
+    if (my_strlen(line) == 0 && read_bytes == 0)
+        return NULL;
+    
+    return line;
+}
+
+static void str_cut(char *str, char cut)
+{
+    // cut newline and replace with terminating 0
+    for (size_t i = 0; str[i]; i++)
+    {
+        if (str[i] == cut)
+        {
+            str[i] = '\0';
+            return;
+        }
+    }
 }
