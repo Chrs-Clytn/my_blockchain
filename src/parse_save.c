@@ -174,17 +174,17 @@ void save_blockchain(chain_t *chain)
     // open file
     int fd = open("blockchain", O_WRONLY | O_CREAT, 0644);
 
+    // synced or not?
+    if (chain->synced == true)
+        write(fd, "s", 1);
+    else
+        write(fd, "-", 1);
+    write(fd, "\n", 1);
+
     // move through chain and write info to file
     node_t *current_node = chain->head;
     while (current_node != NULL)
     {
-        // synced or not?
-        if (chain->synced == true)
-            write(fd, "s", 1);
-        else
-            write(fd, "-", 1);
-        write(fd, "\n", 1);
-
         // write node id of current node
         block_t *current_block = current_node->block_head;
         char *node_id = my_itoa(current_node->nId);
@@ -193,16 +193,16 @@ void save_blockchain(chain_t *chain)
             write(fd, node_id, my_strlen(node_id));
             write(fd, ":", 1);
         }
-        else if (current_node->next == NULL) // removed the bid check as was causing segfault
+        else if (current_node->next == NULL && current_block != NULL)
+        {
+            write(fd, node_id, my_strlen(node_id));
+            write(fd, ":", 1);
+        }
+        else if (current_node->next == NULL && current_block == NULL) // removed the bid check as was causing segfault
         {
             write(fd, node_id, my_strlen(node_id));
             write(fd, "\0", 1);
             break;
-        }
-        else if (current_node->next == NULL && (current_block->bId != NULL))
-        {
-            write(fd, node_id, my_strlen(node_id));
-            write(fd, ":", 1);
         }
         // write blocks for each node
         while (current_block != NULL)

@@ -6,7 +6,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
-//#include <sys/uio.h>
 #include "main.h"
 #include "blockchain.h"
 #include "helpers.h"

@@ -58,7 +58,7 @@ block_t *remove_blocks(block_t *block_head, char *b_id) // function to remove bl
                 temp->next = NULL;
                 free(temp);
                 temp = NULL;
-                debug("bid %s", block_head->bId);
+                // debug("bid %s", block_head->bId);
                 return block_head;
             }
             else if (((my_strcmp(current->next->bId, b_id)) == 0))  // checks if the next block id is what we need, if it is set next to temp, current to next-next and then set temp nxt to NULL and free temp.
