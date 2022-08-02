@@ -7,7 +7,7 @@ OBJ = obj/main.o\
 	obj/blockchain.o\
 	obj/action.o\
 
-CFLAGS += -Iinclude -Wall -Wextra -Werror -g3 -fsanitize=address
+CFLAGS += -Iinclude -g3 -fsanitize=address #-Wall -Wextra -Werror 
 
 HEADER = include/main.h\
 	include/parse_save.h\

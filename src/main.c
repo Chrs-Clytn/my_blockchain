@@ -8,23 +8,26 @@ int main(int ac, char **av)
     {
         chain = open_chain(av[1]);
         if (chain == NULL)
+        {
+            printf("%s", ERR_8);
             return -1;
+        }
     }
     // else create empty blockchain
     else
     {
         chain = malloc(sizeof(chain_t));
-        //node_t *node_head = malloc(sizeof(node_t));
-        //block_t *block_head = malloc(sizeof(block_t));
-        node_t *node_head = NULL;
         if (chain == NULL)
             printf("%s", ERR_1);
+        
+        node_t *node_head = NULL;
+        //node_t *node_head = malloc(sizeof(node_t));
+        //block_t *block_head = malloc(sizeof(block_t));
             
         chain->synced = true;
         chain->nodes = 0;
         //chain->head = NULL;
-        chain->head = node_head; // = malloc(sizeof(node_t));;
-        //chain->head->nId = -1;
+        chain->head = node_head;
         // chain->head->block_head = block_head;
         // chain->head->block_head->bId = "ADBCJada";
     }
@@ -36,10 +39,6 @@ int main(int ac, char **av)
 
     while (true)
     {
-        // print prompt to terminal, then reset input before get_input()
-        //printf("[%s]> %s\n", prompt_string, input);
-        //printf("[%s]> ", prompt_string);  // might be better to print the prompt out individually
-        // scanf("%s", input);
         input = get_input(prompt_string);
 
         // input = NULL;
@@ -54,17 +53,7 @@ int main(int ac, char **av)
         }
 
         // input parsing
-        //printf("input is = %s\n", input);
         command_t *command = parse_input(input);
-        // debug("add now? %d", command->add);
-        // debug("node? %d", command->node);
-        // debug("node_id? %d", command->cmd_node_id);
-        // debug("block_id? %s", command->cmd_block_id);
-        // debug("all? %d", command->all);
-        // debug("ls? %d", command->ls);
-        // debug("ls blocks? %d", command->ls_blocks);
-        // debug("rm? %d", command->rm);
-        // debug("nodes? %d", chain->nodes);
 
         // the action takes places here, depending on command
         chain = take_action(command, chain);
@@ -83,7 +72,6 @@ int main(int ac, char **av)
         free(input);
     
     free(chain);
-
     return 0;
 }
 

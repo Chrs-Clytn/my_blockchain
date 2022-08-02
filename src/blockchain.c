@@ -154,7 +154,7 @@ node_t *listPrinter(node_t *node_head, char *argument) // generic list printer
             block_t *currBlock = current->block_head;
             while (currBlock != NULL)
             {
-                if(currBlock->bId)
+                if(currBlock->bId)      // SEGFAULT after removing first of two blocks in a node, then ls -l
                     printf("%s, ", currBlock->bId);
                 currBlock = currBlock->next;
             }

@@ -64,7 +64,8 @@ node_t *action_block(command_t *command, chain_t *chain)
     if (command->add == true) // add block
     {
         if (chain->head == NULL)
-            printf("%s\n", ERR_4);
+            printf("%s", ERR_4);
+
         while (currNode != NULL) // loop through nodes
         {
             if (command->all == true) // if * is called
@@ -83,12 +84,12 @@ node_t *action_block(command_t *command, chain_t *chain)
                 return chain->head;
             }
             else if (currNode->next == NULL)
-                printf("%s\n", ERR_4);
+                printf("%s", ERR_4);
             // should also add something more specific to counter whether block also already exists.
             currNode = currNode->next;
         }
     }
-    if(command->rm == true) // remove block
+    if (command->rm == true) // remove block
     {
         while (currNode != NULL) // loop through nodes
         {
@@ -160,8 +161,10 @@ chain_t *take_action(command_t *command, chain_t *chain)
 {
     if (command->node == true && command->block == false) // we know the node is being affected
         chain->head = action_node(command, chain);
+
     if (command->block == true) // we know the block is being affected
         chain->head = action_block(command, chain);
+
     if (command->ls == true) // ls
     {
         if (chain->nodes <= 0 || chain->head == NULL)

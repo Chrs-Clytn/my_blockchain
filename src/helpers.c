@@ -1,5 +1,4 @@
 #include "helpers.h"
-#include "string_mgmt.h"
 
 static char *reverse_string(char *word);
 static int find_str_num(char *str, char *sep);

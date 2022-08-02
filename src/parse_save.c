@@ -4,7 +4,7 @@ chain_t *open_chain(char *filename)
 {
     chain_t *chain = malloc(sizeof(chain_t));
     chain->head = NULL;
-    //node_t *node_header = chain->head;
+    // node_t *node_header = chain->head;
 
     int fd = open(filename, O_RDONLY);
     if (fd == -1)
@@ -15,12 +15,12 @@ chain_t *open_chain(char *filename)
     }
     char buffer[MAX_INPUT_SIZE];
     int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
-    //printf("readbytes = %d\n", readbytes);
+    // printf("readbytes = %d\n", readbytes);
     buffer[strlen(buffer) - 1] = '\0';
     printf("%s strlen buffer = %ld\n", buffer, strlen(buffer));
-    for(int i = 0; i <= readbytes; i++)
+    for (int i = 0; i <= readbytes; i++)
     {
-        if(i == 0 || (buffer[i - 2] == '\n'))
+        if (i == 0 || (buffer[i - 2] == '\n'))
         {
             char s = buffer[i];
             printf("s = %d\n", s);
@@ -28,18 +28,18 @@ chain_t *open_chain(char *filename)
             debug("%d", node);
             chain->head = append_node(chain->head, node);
         }
-        else if((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
+        else if ((buffer[i - 1] == ':') || (buffer[i - 1] == ','))
         {
             char *block_id_convert = NULL;
             int k = 0, j = i + 1;
-            while(buffer[j] != ',' || buffer[j] != '\n')
+            while (buffer[j] != ',' || buffer[j] != '\n')
             {
                 block_id_convert[k] = buffer[j];
                 k++;
                 j++;
             }
             append_block(chain->head->block_head, block_id_convert);
-            //chain->head->block_head = chain->head->block_head->next;
+            // chain->head->block_head = chain->head->block_head->next;
         }
     }
     // read file and get info for synced, nodes and head
@@ -53,7 +53,6 @@ chain_t *open_chain(char *filename)
     close(fd);
     return chain;
 }
-
 
 char *get_input(char *prompt_string)
 {
@@ -96,7 +95,7 @@ char *get_input(char *prompt_string)
 //     return input;
 // }
 
-command_t *parse_input(char *input)  // all the functionality (append, remove, list, sync) comes in here!!
+command_t *parse_input(char *input) // all the functionality (append, remove, list, sync) comes in here!!
 {
     // create command struct and set all fields to 0
     command_t *command = malloc(sizeof(command_t));
@@ -121,7 +120,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
     // We should also add some security in here incase wrong number of arguments
 
     // go through string arr, fill command struct according to input
-    for (int i = 0; i < input_arr->size - 1; i++)                       
+    for (int i = 0; i < input_arr->size - 1; i++)
     {
         if (my_strcmp("add", input_arr->array[i]) == 0)
             command->add = true;
@@ -146,7 +145,7 @@ command_t *parse_input(char *input)  // all the functionality (append, remove, l
         {
             command->cmd_block_id = malloc(sizeof(char) * my_strlen(input_arr->array[2]) + 1);
             command->cmd_block_id = input_arr->array[2];
-            if(input_arr->size > 4)
+            if (input_arr->size > 4)
                 command->cmd_node_id = my_atoi(input_arr->array[3]);
         }
         if (input_arr->size > 2 && my_strcmp("block", input_arr->array[1]) == 0 && (my_strcmp("rm", input_arr->array[0])) == 0) // This particularly is throwing issues
@@ -185,58 +184,61 @@ char *change_prompt(chain_t *chain)
     for (int i = 0; node_size[i] != '\0'; i++)
         prompt[i + 1] = node_size[i];
 
-    // debug("prompt: %s", prompt);
-
     return prompt;
 }
 
 // create a save file
-
 void save_blockchain(chain_t *chain)
 {
+    // open file
     int fd = open("blockchain", O_WRONLY | O_CREAT, 0644);
+
+    // move through chain and write info to file
     node_t *current_node = chain->head;
-    while(current_node != NULL)
+    while (current_node != NULL)
     {
-        //printf("Current node id = %d\n", current_node->nId);
+        // synced or not?
+        if (chain->synced == true)
+            write(fd, "s", 1);
+        else
+            write(fd, "-", 1);
+        write(fd, "\n", 1);
+
+        // write node id of current node
         block_t *current_block = current_node->block_head;
-        char* node_id = my_itoa(current_node->nId);
-        if(current_node->nId && (current_node->next != NULL))
+        char *node_id = my_itoa(current_node->nId);
+        if (current_node->nId && (current_node->next != NULL))
         {
-            //printf("first if, 172\n");
-            write(fd, node_id, strlen(node_id));
+            write(fd, node_id, my_strlen(node_id));
             write(fd, ":", 1);
         }
-        else if(current_node->next == NULL && (current_block->bId == NULL))
+        else if (current_node->next == NULL && (current_block->bId == NULL))  // SEGFAULT if only node is added without adding block & then save/quit
         {
-            //printf("178, node id = %d, bid = NULL\n", current_node->nId);
-            write(fd, node_id, strlen(node_id));
+            write(fd, node_id, my_strlen(node_id));
             write(fd, "\0", 1);
             break;
         }
-        else if(current_node->next == NULL && (current_block->bId != NULL))
+        else if (current_node->next == NULL && (current_block->bId != NULL))
         {
-            write(fd, node_id, strlen(node_id));
+            write(fd, node_id, my_strlen(node_id));
             write(fd, ":", 1);
         }
-        while(current_block != NULL)
+        // write blocks for each node
+        while (current_block != NULL)
         {
-            //printf("block id = %s\n", current_block->bId);
-            if(current_block->bId && (current_block->next != NULL))
+            if (current_block->bId && (current_block->next != NULL))
             {
-                //printf("188 bid present, next != NULL");
-                write(fd, current_block->bId, strlen(current_block->bId));
+                write(fd, current_block->bId, my_strlen(current_block->bId));
                 write(fd, ",", 1);
             }
-            else if(current_block->next == NULL)
+            else if (current_block->next == NULL)
             {
-                //printf("next block = NULL\n");
-                write(fd, current_block->bId, strlen(current_block->bId));
+                write(fd, current_block->bId, my_strlen(current_block->bId));
                 write(fd, "\n", 1);
             }
             current_block = current_block->next;
         }
-       current_node = current_node->next;
+        current_node = current_node->next;
     }
     close(fd);
 }
