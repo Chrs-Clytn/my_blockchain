@@ -5,6 +5,8 @@
 
 
 Create a Blockchain from scratch!  
+We created this project to showcase C coding skills.
+It took around 3 weeks part time coding, and was created August 2022.
 
 
 ## Description
