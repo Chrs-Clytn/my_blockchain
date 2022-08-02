@@ -1,6 +1,7 @@
 # Welcome to My Blockchain
 ***
-![My Image](https://github.com/Chrs-Clytn/my_blockchain/tree/main/.img/blocker.png)  
+
+<img src="/https://github.com/Chrs-Clytn/my_blockchain/tree/main/.img/blocker.png" alt="Alt text" title="Blockchain Image">
 
 
 ## Task
