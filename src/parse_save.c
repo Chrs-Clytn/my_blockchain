@@ -6,7 +6,8 @@ chain_t *open_chain(char *filename)
 {
     chain_t *chain = malloc(sizeof(chain_t));
     chain->head = NULL;
-    // node_t *node_header = chain->head;
+    chain->nodes = 0;
+    chain->synced = true;
 
     int fd = open(filename, O_RDONLY);
     if (fd == -1)
@@ -19,18 +20,11 @@ chain_t *open_chain(char *filename)
     char *line = NULL;
     while ((line = my_readline(fd)) != NULL)
     {
-        printf("%s\n", line);
+        debug("%s", line);
         // convert line to chain info
-        // chain = fill_chain(chain, line);
+        chain = fill_chain(chain, line);
         free(line);
     }
-
-    /* char buffer[MAX_INPUT_SIZE];
-    int readbytes = read(fd, buffer, MAX_INPUT_SIZE);
-    debug("readbytes = %d", readbytes);
-
-    buffer[readbytes] = '\0';
-    debug("buff: %s", buffer); */
 
     close(fd);
     return chain;
@@ -38,17 +32,54 @@ chain_t *open_chain(char *filename)
 
 static chain_t *fill_chain(chain_t *chain, char *line)
 {
+    // check if there are blocks in current node/line & count chars of node_str
+    bool block_present = false;
+    int node_str_size = 0; // for malloc
     for (int i = 0; line[i] != '\0'; i++)
     {
-        if (i == 0 || (line[i - 2] == '\n'))
+        if (line[i] == ':')
+            block_present = true;
+        else
+            node_str_size++;
+    }
+
+    int j = 0;
+    char *node_str = malloc(sizeof(char) * node_str_size + 1);
+    for (int i = 0; line[i] != '\0'; i++)
+    {
+        debug("line i: %c", line[i]);
+        // set synced field
+        if (i == 0 && line[i] == 's')
         {
-            char s = line[i];
-            printf("s = %d\n", s);
-            int node = s - 48;
-            debug("%d", node);
-            chain->head = append_node(chain->head, node);
+            chain->synced = true;
+            return chain;
         }
-        else if ((line[i - 1] == ':') || (line[i - 1] == ','))
+        if (i == 0 && line[i] == '-')
+        {
+            chain->synced = false;
+            return chain;
+        }
+        // find & convert node value to int, append node to chain
+        while (line[i] != ':' && line[i] != '\n' && line[i] != '\0')
+        {
+            node_str[j] = line[i];
+            i++;
+            j++;
+        }
+        node_str[j] = '\0';
+        debug("node: %s", node_str);
+
+        int node = my_atoi(node_str); // convert char to int
+        debug("%d", node);
+        chain->head = append_node(chain->head, node);
+        chain->nodes += 1;
+        
+        if (line[i] == '\0')
+            return chain;
+        
+        /*
+        i++; // because i was still on the : if we get here
+        if (block_present == true))
         {
             char *block_id_convert = NULL;
             int k = 0, j = i + 1;
@@ -60,8 +91,9 @@ static chain_t *fill_chain(chain_t *chain, char *line)
             }
             append_block(chain->head->block_head, block_id_convert);
             // chain->head->block_head = chain->head->block_head->next;
-        }
+        } */
     }
+    free(node_str);
     return chain;
 }
 
@@ -199,6 +231,7 @@ void save_blockchain(chain_t *chain)
         // write node id of current node
         block_t *current_block = current_node->block_head;
         char *node_id = my_itoa(current_node->nId);
+        // 
         if (current_node->nId && (current_node->next != NULL))
         {
             write(fd, node_id, my_strlen(node_id));
