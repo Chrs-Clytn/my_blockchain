@@ -287,22 +287,20 @@ void save_blockchain(chain_t *chain)
         if (current_node->nId) 
         {
             write(fd, node_id, my_strlen(node_id)); // write node id of current node
-            if (current_node->block_head != NULL)
+            if (current_node->block_head != NULL) // if blockhead is present write : in order to write blocklist after, otherwise write \n
                 write(fd, ":", 1);
             else
                 write(fd, "\n", 1);
         }    
         while (current_block != NULL)
         {
-            if (current_block->bId && (current_block->next != NULL))
+            if (current_block->bId)
             {
                 write(fd, current_block->bId, my_strlen(current_block->bId)); // write blocks for each node
-                write(fd, ",", 1);
-            }
-            else if (current_block->next == NULL)
-            {
-                write(fd, current_block->bId, my_strlen(current_block->bId));
-                write(fd, "\n", 1);
+                if(current_block->next != NULL) // if there is a next block write , to seperate the blocklist id, otherwise write \n
+                    write(fd, ",", 1);
+                else
+                    write(fd, "\n", 1);
             }
             current_block = current_block->next;
         }
