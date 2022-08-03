@@ -20,7 +20,7 @@ chain_t *open_chain(char *filename)
     char *line = NULL;
     while ((line = my_readline(fd)) != NULL)
     {
-        debug("%s", line);
+        // debug("%s", line);
         // convert line to chain info
         chain = fill_chain(chain, line);
         free(line);
@@ -48,7 +48,7 @@ static chain_t *fill_chain(chain_t *chain, char *line)
     char *node_str = malloc(sizeof(char) * node_str_size + 1);
     for (int i = 0; line[i] != '\0'; i++)
     {
-        debug("line i: %c", line[i]);
+        // debug("line i: %c", line[i]);
         // set synced field
         if (i == 0 && line[i] == 's')
         {
@@ -74,7 +74,7 @@ static chain_t *fill_chain(chain_t *chain, char *line)
             // debug("node: %s", node_str);
 
             int node = my_atoi(node_str); // convert char to int
-            debug("%d", node);
+            // debug("%d", node);
             chain->head = append_node(chain->head, node);
             chain->nodes += 1;
             node_written = true;
@@ -84,7 +84,7 @@ static chain_t *fill_chain(chain_t *chain, char *line)
             
             i++; // because i was still on the ':' if we get here
         }
-        debug("line i: %c", line[i]);
+        // debug("line i: %c", line[i]);
         // write blocks
         if (block_present == true)
         {
@@ -92,7 +92,7 @@ static chain_t *fill_chain(chain_t *chain, char *line)
             int block_id_len = 0;
             for (int j = i; line[j] != ',' && line[j] != '\n' && line[j] != '\0'; j++)
                 block_id_len++;
-            debug("len: %d", block_id_len);
+            // debug("len: %d", block_id_len);
             char *block_id = malloc(sizeof(char) * block_id_len + 1);
             
             // copy block id & append block
@@ -104,8 +104,14 @@ static chain_t *fill_chain(chain_t *chain, char *line)
                 k++;
             }
             block_id[k] = '\0';
-            
-            chain->head->block_head = append_block(chain->head->block_head, block_id);
+            node_t *temp_node = chain->head;
+            if (temp_node != NULL)
+            {
+                // debug("nid = %d", temp_node->nId);
+                while (temp_node->next != NULL)
+                    temp_node = temp_node->next;
+                temp_node->block_head = append_block(temp_node->block_head, block_id);
+            }
         }
     }
     free(node_str);
