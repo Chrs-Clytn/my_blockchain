@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include "string_mgmt.h"
+#include "dbg.h"
 
 #ifndef STRUCT_STRING_ARRAY
 #define STRUCT_STRING_ARRAY
@@ -16,7 +17,7 @@ typedef struct s_string_array {
 #endif
 
 #define MAX_SIZE 512
-#define READLINE_READ_SIZE 10
+#define READLINE_READ_SIZE 2
 char *STORAGE;
 
 int my_atoi(char *str);

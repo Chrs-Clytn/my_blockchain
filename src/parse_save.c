@@ -33,6 +33,7 @@ chain_t *open_chain(char *filename)
 static chain_t *fill_chain(chain_t *chain, char *line)
 {
     // check if there are blocks in current node/line & count chars of node_str
+    bool node_written = false;
     bool block_present = false;
     int node_str_size = 0; // for malloc
     for (int i = 0; line[i] != '\0'; i++)
@@ -59,39 +60,53 @@ static chain_t *fill_chain(chain_t *chain, char *line)
             chain->synced = false;
             return chain;
         }
-        // find & convert node value to int, append node to chain
-        while (line[i] != ':' && line[i] != '\n' && line[i] != '\0')
+        // write node if not yet done
+        if (node_written == false)
         {
-            node_str[j] = line[i];
-            i++;
-            j++;
-        }
-        node_str[j] = '\0';
-        debug("node: %s", node_str);
-
-        int node = my_atoi(node_str); // convert char to int
-        debug("%d", node);
-        chain->head = append_node(chain->head, node);
-        chain->nodes += 1;
-        
-        if (line[i] == '\0')
-            return chain;
-        
-        /*
-        i++; // because i was still on the : if we get here
-        if (block_present == true))
-        {
-            char *block_id_convert = NULL;
-            int k = 0, j = i + 1;
-            while (line[j] != ',' || line[j] != '\n')
+            // find & convert node value to int, append node to chain
+            while (line[i] != ':' && line[i] != '\n' && line[i] != '\0')
             {
-                block_id_convert[k] = line[j];
-                k++;
+                node_str[j] = line[i];
+                i++;
                 j++;
             }
-            append_block(chain->head->block_head, block_id_convert);
-            // chain->head->block_head = chain->head->block_head->next;
-        } */
+            node_str[j] = '\0';
+            // debug("node: %s", node_str);
+
+            int node = my_atoi(node_str); // convert char to int
+            debug("%d", node);
+            chain->head = append_node(chain->head, node);
+            chain->nodes += 1;
+            node_written = true;
+
+            if (line[i] == '\0' || line[i] == '\n')
+                return chain;
+            
+            i++; // because i was still on the ':' if we get here
+        }
+        debug("line i: %c", line[i]);
+        // write blocks
+        if (block_present == true)
+        {
+            // count chars of block id for malloc
+            int block_id_len = 0;
+            for (int j = i; line[j] != ',' && line[j] != '\n' && line[j] != '\0'; j++)
+                block_id_len++;
+            debug("len: %d", block_id_len);
+            char *block_id = malloc(sizeof(char) * block_id_len + 1);
+            
+            // copy block id & append block
+            int k = 0;
+            while (line[i] != ',' && line[i] != '\n' && line[i] != '\0')
+            {
+                block_id[k] = line[i];
+                i++;
+                k++;
+            }
+            block_id[k] = '\0';
+            
+            chain->head->block_head = append_block(chain->head->block_head, block_id);
+        }
     }
     free(node_str);
     return chain;
